@@ -8,20 +8,38 @@
 
 /* Begin PBXBuildFile section */
 		7A028A171CEF26D000C51F99 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A161CEF26D000C51F99 /* AppDelegate.swift */; };
-		7A028A191CEF26D000C51F99 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A181CEF26D000C51F99 /* ViewController.swift */; };
 		7A028A1C1CEF26D000C51F99 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A028A1A1CEF26D000C51F99 /* Main.storyboard */; };
 		7A028A1E1CEF26D000C51F99 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A028A1D1CEF26D000C51F99 /* Assets.xcassets */; };
 		7A028A211CEF26D000C51F99 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7A028A1F1CEF26D000C51F99 /* LaunchScreen.storyboard */; };
+		7A028A291CEF270400C51F99 /* DownloadListController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A281CEF270400C51F99 /* DownloadListController.swift */; };
+		7A028A2B1CEF284400C51F99 /* Torrent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A2A1CEF284400C51F99 /* Torrent.swift */; };
+		7A028A2D1CEF288000C51F99 /* XMLRPCParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */; };
+		7A028A2F1CEF28D400C51F99 /* rTorrentCall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */; };
+		7A028A311CEF28E900C51F99 /* Manager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A301CEF28E900C51F99 /* Manager.swift */; };
+		7A028A331CEF2B9D00C51F99 /* TabBarManagerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A321CEF2B9D00C51F99 /* TabBarManagerController.swift */; };
+		7A028A361CEF2CDD00C51F99 /* TorrentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */; };
+		7A028A371CEF2CDD00C51F99 /* TorrentCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */; };
+		7A028A391CEF318E00C51F99 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A381CEF318E00C51F99 /* SettingsController.swift */; };
+		7A028A3B1CEF37AC00C51F99 /* HelperFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A028A3A1CEF37AC00C51F99 /* HelperFunctions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		7A028A131CEF26D000C51F99 /* roTorrentV2.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = roTorrentV2.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A028A161CEF26D000C51F99 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7A028A181CEF26D000C51F99 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		7A028A1B1CEF26D000C51F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7A028A1D1CEF26D000C51F99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A028A201CEF26D000C51F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A028A221CEF26D000C51F99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7A028A281CEF270400C51F99 /* DownloadListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadListController.swift; path = ../DownloadListController.swift; sourceTree = "<group>"; };
+		7A028A2A1CEF284400C51F99 /* Torrent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Torrent.swift; sourceTree = "<group>"; };
+		7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLRPCParser.swift; sourceTree = "<group>"; };
+		7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = rTorrentCall.swift; sourceTree = "<group>"; };
+		7A028A301CEF28E900C51F99 /* Manager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Manager.swift; sourceTree = "<group>"; };
+		7A028A321CEF2B9D00C51F99 /* TabBarManagerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarManagerController.swift; sourceTree = "<group>"; };
+		7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TorrentCell.swift; sourceTree = "<group>"; };
+		7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TorrentCell.xib; sourceTree = "<group>"; };
+		7A028A381CEF318E00C51F99 /* SettingsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
+		7A028A3A1CEF37AC00C51F99 /* HelperFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HelperFunctions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,8 +73,17 @@
 			isa = PBXGroup;
 			children = (
 				7A028A161CEF26D000C51F99 /* AppDelegate.swift */,
-				7A028A181CEF26D000C51F99 /* ViewController.swift */,
+				7A028A281CEF270400C51F99 /* DownloadListController.swift */,
+				7A028A381CEF318E00C51F99 /* SettingsController.swift */,
+				7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */,
+				7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */,
+				7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */,
+				7A028A301CEF28E900C51F99 /* Manager.swift */,
+				7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */,
+				7A028A2A1CEF284400C51F99 /* Torrent.swift */,
 				7A028A1A1CEF26D000C51F99 /* Main.storyboard */,
+				7A028A321CEF2B9D00C51F99 /* TabBarManagerController.swift */,
+				7A028A3A1CEF37AC00C51F99 /* HelperFunctions.swift */,
 				7A028A1D1CEF26D000C51F99 /* Assets.xcassets */,
 				7A028A1F1CEF26D000C51F99 /* LaunchScreen.storyboard */,
 				7A028A221CEF26D000C51F99 /* Info.plist */,
@@ -96,6 +123,7 @@
 				TargetAttributes = {
 					7A028A121CEF26D000C51F99 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = U34ZVBHBJ7;
 					};
 				};
 			};
@@ -124,6 +152,7 @@
 			files = (
 				7A028A211CEF26D000C51F99 /* LaunchScreen.storyboard in Resources */,
 				7A028A1E1CEF26D000C51F99 /* Assets.xcassets in Resources */,
+				7A028A371CEF2CDD00C51F99 /* TorrentCell.xib in Resources */,
 				7A028A1C1CEF26D000C51F99 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -135,8 +164,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A028A191CEF26D000C51F99 /* ViewController.swift in Sources */,
+				7A028A391CEF318E00C51F99 /* SettingsController.swift in Sources */,
+				7A028A2D1CEF288000C51F99 /* XMLRPCParser.swift in Sources */,
+				7A028A311CEF28E900C51F99 /* Manager.swift in Sources */,
+				7A028A361CEF2CDD00C51F99 /* TorrentCell.swift in Sources */,
+				7A028A2F1CEF28D400C51F99 /* rTorrentCall.swift in Sources */,
+				7A028A3B1CEF37AC00C51F99 /* HelperFunctions.swift in Sources */,
+				7A028A291CEF270400C51F99 /* DownloadListController.swift in Sources */,
 				7A028A171CEF26D000C51F99 /* AppDelegate.swift in Sources */,
+				7A028A2B1CEF284400C51F99 /* Torrent.swift in Sources */,
+				7A028A331CEF2B9D00C51F99 /* TabBarManagerController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -249,10 +286,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = roTorrentV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.romainhild.roTorrentV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -260,10 +300,13 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = roTorrentV2/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.romainhild.roTorrentV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
