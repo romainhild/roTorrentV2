@@ -24,9 +24,18 @@ class Manager: NSObject, NSCoding {
     var mutableRequest: NSMutableURLRequest?
     var dataTask: NSURLSessionDataTask?
     
+    var feeds = [RSSFeed]()
+    var itemsSorted = [RSSItem]()
+    var feedsCount: Int {
+        return itemsSorted.count
+    }
+    
     override init() {
         urlComponents = NSURLComponents()
         urlComponents.scheme = "https"
+        
+        feeds = [RSSFeed]()
+        
         super.init()
     }
     
@@ -45,7 +54,22 @@ class Manager: NSObject, NSCoding {
         if let path = aDecoder.decodeObjectForKey("path") as? String {
             urlComponents.path = path
         }
+        if let feeds = aDecoder.decodeObjectForKey("feeds") as? [RSSFeed] {
+            self.feeds = feeds
+        }
+
         super.init()
+
+//        if let url = NSURL(string: "https://iptorrents.com/torrents/rss?u=1494307;tp=dcf0b7a01b8a39fce5517b1227410943;bookmarks;download") {
+//            if let feed = RSSFeed(title: "test", link: url) {
+//                feeds.append(feed)
+//            } else {
+//                print("no feed")
+//            }
+//        } else {
+//            print("no url")
+//        }
+        updateFeeds()
     }
     
     func encodeWithCoder(aCoder: NSCoder) {
@@ -61,12 +85,12 @@ class Manager: NSObject, NSCoding {
         if let path = urlComponents.path {
             aCoder.encodeObject(path, forKey: "path")
         }
+        aCoder.encodeObject(feeds, forKey: "feeds")
     }
     
     func call(call: RTorrentCall, completionHandler: Response<XMLRPCType,NSError> -> Void) {
         if let task = dataTask {
             task.cancel()
-            print("canceled")
         }
         initPostRequestWithCall(call )
         if let mutableRequest = mutableRequest {
@@ -85,6 +109,7 @@ class Manager: NSObject, NSCoding {
                         return
                     }
                     if let data = data {
+                        print(String(data: data, encoding: NSUTF8StringEncoding))
                         let parser = XMLRPCParser(data: data)
                         let success = parser.parse()
                         if success {
@@ -124,7 +149,6 @@ class Manager: NSObject, NSCoding {
         let length = body.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
         
         if let host = urlComponents.host where !host.isEmpty, let url = url {
-            print("url : \(url)")
             mutableRequest = NSMutableURLRequest(URL: url)
             mutableRequest!.setValue("text/xml", forHTTPHeaderField: "Content-Type")
             mutableRequest!.setValue("roTorrent", forHTTPHeaderField: "User-Agent")
@@ -137,5 +161,27 @@ class Manager: NSObject, NSCoding {
     func callToInitList() -> RTorrentCall {
         let list = [RTorrentCall.Filename(""), RTorrentCall.Hash(""), RTorrentCall.Date(""), RTorrentCall.Ratio(""), RTorrentCall.Size(""), RTorrentCall.SizeCompleted(""), RTorrentCall.SizeLeft(""), RTorrentCall.SizeUP(""), RTorrentCall.Path(""), RTorrentCall.Directory(""), RTorrentCall.SpeedDL(""), RTorrentCall.SpeedUP(""), RTorrentCall.Leechers(""), RTorrentCall.Seeders(""), RTorrentCall.State(""), RTorrentCall.IsActive(""), RTorrentCall.Message(""), RTorrentCall.NumberOfFiles(""), RTorrentCall.NumberOfTrackers("")]
         return RTorrentCall.DMultiCall("main", list)
+    }
+    
+    func updateFeeds() {
+        for feed in feeds {
+            feed.update()
+        }
+        itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+    }
+    
+    func appendRSS(feed: RSSFeed) {
+        feeds.append(feed)
+        itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+    }
+    
+    func removeFeed(feed: RSSFeed?) {
+        if let feed = feed, index = feeds.indexOf(feed) {
+            feeds.removeAtIndex(index)
+            itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+        } else {
+            feeds.removeAll()
+            itemsSorted.removeAll()
+        }
     }
 }

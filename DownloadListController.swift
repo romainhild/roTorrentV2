@@ -36,9 +36,8 @@ class DownloadListController: UITableViewController {
         manager.call(call) {response in
             switch response {
             case .Success(let xmltype):
-                print("success")
-                self.torrents.initWithXmlArray(xmltype)
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.torrents.initWithXmlArray(xmltype)
                     self.tableView.reloadData()
                 }
             case .Failure(let error):
