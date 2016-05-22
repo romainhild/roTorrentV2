@@ -25,9 +25,10 @@ class Manager: NSObject, NSCoding {
     var dataTask: NSURLSessionDataTask?
     
     var feeds = [RSSFeed]()
-    var itemsSorted = [RSSItem]()
+    var feedToDisplay: RSSFeed?
+    var itemsToDisplay = [RSSItem]()
     var feedsCount: Int {
-        return itemsSorted.count
+        return itemsToDisplay.count
     }
     
     override init() {
@@ -57,7 +58,7 @@ class Manager: NSObject, NSCoding {
         if let feeds = aDecoder.decodeObjectForKey("feeds") as? [RSSFeed] {
             self.feeds = feeds
         }
-
+        
         super.init()
 
 //        if let url = NSURL(string: "https://iptorrents.com/torrents/rss?u=1494307;tp=dcf0b7a01b8a39fce5517b1227410943;bookmarks;download") {
@@ -163,25 +164,52 @@ class Manager: NSObject, NSCoding {
         return RTorrentCall.DMultiCall("main", list)
     }
     
+    func updateItemsToDisplay() {
+        if let feedToDisplay = feedToDisplay {
+            itemsToDisplay = feedToDisplay.items.sort(<)
+        } else {
+            itemsToDisplay = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+        }
+    }
+    
     func updateFeeds() {
         for feed in feeds {
             feed.update()
         }
-        itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+        updateItemsToDisplay()
     }
     
     func appendRSS(feed: RSSFeed) {
         feeds.append(feed)
-        itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+        updateItemsToDisplay()
     }
     
     func removeFeed(feed: RSSFeed?) {
         if let feed = feed, index = feeds.indexOf(feed) {
+            if feedToDisplay == feed {
+                feedToDisplay = nil
+            }
             feeds.removeAtIndex(index)
-            itemsSorted = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
         } else {
+            feedToDisplay = nil
             feeds.removeAll()
-            itemsSorted.removeAll()
+        }
+        updateItemsToDisplay()
+    }
+    
+    func numberOtItemsToDisplay(searchText: String?) -> Int {
+        if let searchText = searchText {
+            return itemsToDisplay.filter { $0.match(searchText) }.count
+        } else {
+            return itemsToDisplay.count
+        }
+    }
+    
+    func itemToDisplayAtIndexPath(indexPath: NSIndexPath, thatMatch searchText: String?) -> RSSItem {
+        if let searchText = searchText {
+            return itemsToDisplay.filter { $0.match(searchText) }[indexPath.row]
+        } else {
+            return itemsToDisplay[indexPath.row]
         }
     }
 }

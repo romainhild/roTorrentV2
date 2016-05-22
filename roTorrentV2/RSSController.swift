@@ -11,6 +11,8 @@ import UIKit
 class RSSController: UITableViewController {
     
     var manager: Manager!
+    
+    var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +22,14 @@ class RSSController: UITableViewController {
 
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: #selector(RSSController.refresh(_:)), forControlEvents: .ValueChanged)
+        
+        let mainRect = UIScreen.mainScreen().bounds
+        searchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: mainRect.width-20,height: 56))
+        searchBar.delegate = self
+        searchBar.placeholder = "Search Torrent"
+        tableView.tableHeaderView = searchBar
+        tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height)
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -58,19 +68,18 @@ class RSSController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return manager.feedsCount
+        return manager.numberOtItemsToDisplay(searchBar.text)
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("RSSCell", forIndexPath: indexPath)
-
-        cell.textLabel?.text = manager.itemsSorted[indexPath.row].title
-
+        let item = manager.itemToDisplayAtIndexPath(indexPath, thatMatch: searchBar.text)
+        cell.textLabel?.text = item.title
         return cell
     }
     
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-        let item = manager.itemsSorted[indexPath.row]
+        let item = manager.itemToDisplayAtIndexPath(indexPath, thatMatch: searchBar.text)
         let torrent = item.title
         let url = item.link
         let actionSheet = UIAlertController(title: "Add Torrent", message: torrent, preferredStyle: .ActionSheet)
@@ -88,8 +97,8 @@ class RSSController: UITableViewController {
         presentViewController(actionSheet, animated: true, completion: nil)
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
     }
-
-    // MARK: - Navigation
+    
+   // MARK: - Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "AddRSS" {
@@ -110,5 +119,15 @@ extension RSSController: AddRSSDelegate {
     func addFeed(feed: RSSFeed, sender: AnyObject) {
         self.manager.appendRSS(feed)
         self.tableView.reloadData()
+    }
+}
+
+extension RSSController: UISearchBarDelegate {
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        self.tableView.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        self.searchBar.resignFirstResponder()
     }
 }
