@@ -296,19 +296,22 @@ class Torrent : NSObject
             break
         }
     }
-
+    
+    func match(search: String) -> Bool {
+        if !search.isEmpty {
+            var searchAsRegex = search.stringByReplacingOccurrencesOfString(" ", withString: ".")
+            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("_", withString: ".")
+            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("-", withString: ".")
+            let b = name.rangeOfString(searchAsRegex, options: [.RegularExpressionSearch, .CaseInsensitiveSearch])
+            return (b != nil)
+        } else {
+            return true
+        }
+    }
 }
 
 class Torrents {
-    var torrents = [Torrent]()
-    
-    var count: Int {
-        return torrents.count
-    }
-    
-    subscript(index: Int) -> Torrent {
-        return torrents[index]
-    }
+    private var torrents = [Torrent]()
     
     func initWithXmlArray(xmlArray: XMLRPCType) {
         torrents.removeAll()
@@ -326,5 +329,33 @@ class Torrents {
         default:
             break
         }
+    }
+}
+
+extension Torrents: SequenceType {
+    func generate() -> AnyGenerator<Torrent> {
+        var nextIndex = 0
+        return AnyGenerator<Torrent> {
+            if nextIndex < self.torrents.count {
+                nextIndex += 1
+                return self.torrents[nextIndex-1]
+            } else {
+                return nil
+            }
+        }
+    }
+}
+
+extension Torrents: CollectionType {
+    var startIndex: Int {
+        return 0
+    }
+    
+    var endIndex: Int {
+        return torrents.count
+    }
+
+    subscript(index: Int) -> Torrent {
+        return torrents[index]
     }
 }
