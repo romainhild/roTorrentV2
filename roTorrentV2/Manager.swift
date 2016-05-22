@@ -25,7 +25,11 @@ class Manager: NSObject, NSCoding {
     var dataTask: NSURLSessionDataTask?
     
     var feeds = [RSSFeed]()
-    var feedToDisplay: RSSFeed?
+    var feedToDisplay: RSSFeed? {
+        didSet {
+            updateItemsToDisplay()
+        }
+    }
     var itemsToDisplay = [RSSItem]()
     var feedsCount: Int {
         return itemsToDisplay.count

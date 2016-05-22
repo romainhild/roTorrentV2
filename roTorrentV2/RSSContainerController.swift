@@ -101,7 +101,6 @@ extension RSSContainerController: RSSControllerDelegate {
             }
         } else {
             if panelCollapsed {
-                print("toggle collapsed")
                 rssController.view.addGestureRecognizer(recognizer)
                 addFilterPanelController()
             } else {
@@ -117,6 +116,8 @@ extension RSSContainerController: RSSControllerDelegate {
     func addFilterPanelController() {
         if filterController == nil {
             filterController = UIStoryboard.filterViewController()
+            let tabBar = self.tabBarController as! TabBarManagerController
+            filterController?.manager = tabBar.manager
             
             addChildSidePanelController(filterController!)
         }
@@ -138,6 +139,8 @@ extension RSSContainerController: RSSControllerDelegate {
                 self.panelCollapsed = true
                 self.filterController!.view.removeFromSuperview()
                 self.filterController = nil
+                let tabBar = self.tabBarController as! TabBarManagerController
+                tabBar.tabBar.translucent = true
             }
         }
     }
@@ -145,8 +148,10 @@ extension RSSContainerController: RSSControllerDelegate {
     func animateCenterPanelXPosition(targetPosition: CGFloat, withDuration duration: NSTimeInterval = 0.5, completion: ((Bool) -> Void)! = nil) {
         UIView.animateWithDuration(0.5, delay: 0, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .CurveEaseInOut, animations: {
             self.navController.view.frame.origin.x = targetPosition
+            let tabBar = self.tabBarController as! TabBarManagerController
+            tabBar.tabBar.translucent = false
+            
 //            self.filterController?.view.frame.origin.x = -targetPosition
-            // let tabBar = self.tabBarController as! TabBarManagerController
             //            tabBar.view.frame.origin.x = targetPosition
             }, completion: completion)
     }
