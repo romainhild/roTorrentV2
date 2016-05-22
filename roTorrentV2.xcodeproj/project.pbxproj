@@ -92,19 +92,13 @@
 				7A028A321CEF2B9D00C51F99 /* TabBarManagerController.swift */,
 				7A028A281CEF270400C51F99 /* DownloadListController.swift */,
 				7A028A381CEF318E00C51F99 /* SettingsController.swift */,
-				7A1599F21CEF5764006B36B0 /* RSSController.swift */,
-				7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */,
-				7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */,
-				7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */,
-				7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */,
-				7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */,
+				7A159A061CF20295006B36B0 /* RSS Controllers */,
+				7A159A071CF202B5006B36B0 /* Cells */,
 				7A028A2A1CEF284400C51F99 /* Torrent.swift */,
-				7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */,
 				7A028A301CEF28E900C51F99 /* Manager.swift */,
+				7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */,
 				7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */,
-				7A1599F41CEF588F006B36B0 /* RSSParser.swift */,
-				7A1599F61CEF5C97006B36B0 /* RSSItem.swift */,
-				7A1599FA1CEF5DFB006B36B0 /* RSSFeed.swift */,
+				7A159A081CF202D1006B36B0 /* RSS Model */,
 				7A1599F81CEF5CEA006B36B0 /* DateFormatterSingleton.swift */,
 				7A028A1A1CEF26D000C51F99 /* Main.storyboard */,
 				7A028A3A1CEF37AC00C51F99 /* HelperFunctions.swift */,
@@ -113,6 +107,36 @@
 				7A028A221CEF26D000C51F99 /* Info.plist */,
 			);
 			path = roTorrentV2;
+			sourceTree = "<group>";
+		};
+		7A159A061CF20295006B36B0 /* RSS Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				7A1599F21CEF5764006B36B0 /* RSSController.swift */,
+				7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */,
+				7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */,
+				7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */,
+			);
+			name = "RSS Controllers";
+			sourceTree = "<group>";
+		};
+		7A159A071CF202B5006B36B0 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */,
+				7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */,
+			);
+			name = Cells;
+			sourceTree = "<group>";
+		};
+		7A159A081CF202D1006B36B0 /* RSS Model */ = {
+			isa = PBXGroup;
+			children = (
+				7A1599F41CEF588F006B36B0 /* RSSParser.swift */,
+				7A1599F61CEF5C97006B36B0 /* RSSItem.swift */,
+				7A1599FA1CEF5DFB006B36B0 /* RSSFeed.swift */,
+			);
+			name = "RSS Model";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
