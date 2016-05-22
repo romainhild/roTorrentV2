@@ -37,10 +37,10 @@
             </objects>
             <point key="canvasLocation" x="1552" y="305"/>
         </scene>
-        <!--RSS-->
+        <!--Title-->
         <scene sceneID="UNJ-vW-xoW">
             <objects>
-                <tableViewController id="ZtE-SL-W5Y" customClass="RSSController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="RSSID" id="ZtE-SL-W5Y" customClass="RSSController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="QAO-bl-qvB">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -71,10 +71,15 @@
                             <outlet property="delegate" destination="ZtE-SL-W5Y" id="BqV-9s-9oz"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="RSS" id="rAE-Si-Srj">
-                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="uuQ-j0-vir">
+                    <navigationItem key="navigationItem" title="Title" id="GNM-eQ-tMU">
+                        <barButtonItem key="leftBarButtonItem" image="FilterIcon" id="eVE-9P-luf">
                             <connections>
-                                <action selector="edit:" destination="ZtE-SL-W5Y" id="a9b-4d-Kik"/>
+                                <action selector="toggleFilter:" destination="ZtE-SL-W5Y" id="dWZ-5c-sKf"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="P7V-Qd-vsH">
+                            <connections>
+                                <action selector="edit:" destination="ZtE-SL-W5Y" id="UCn-BI-vQg"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -424,13 +429,13 @@
                     </tabBar>
                     <connections>
                         <segue destination="GqF-xa-JMW" kind="relationship" relationship="viewControllers" id="Ttv-bJ-SDU"/>
-                        <segue destination="ky8-sD-4Pd" kind="relationship" relationship="viewControllers" id="fTk-kt-g0e"/>
+                        <segue destination="HPs-5t-jSZ" kind="relationship" relationship="viewControllers" id="SLG-q0-SJw"/>
                         <segue destination="Ru1-i8-tJJ" kind="relationship" relationship="viewControllers" id="UOe-y5-f4Z"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dhq-bl-eXh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-72" y="305"/>
+            <point key="canvasLocation" x="-56" y="305"/>
         </scene>
         <!--Settings-->
         <scene sceneID="dX8-l6-GzO">
@@ -452,9 +457,59 @@
             <point key="canvasLocation" x="740" y="1014"/>
         </scene>
         <!--RSS-->
+        <scene sceneID="P7J-V0-ptf">
+            <objects>
+                <viewController id="HPs-5t-jSZ" customClass="RSSContainerController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="MrO-p3-M2c"/>
+                        <viewControllerLayoutGuide type="bottom" id="sKS-eV-hBW"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="4rX-0f-p3c">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" title="RSS" image="RSSIcon" id="SWV-Dv-nVF"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="8Vf-8c-v8r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-72" y="-811"/>
+        </scene>
+        <!--Filter Controller-->
+        <scene sceneID="9U7-oG-taF">
+            <objects>
+                <tableViewController storyboardIdentifier="RSSFilterID" id="eaH-YJ-eLn" customClass="RSSFilterController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="WJR-Ht-rmH">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="sectionIndexBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FilterCell" id="j9f-0r-ETi">
+                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="j9f-0r-ETi" id="fr5-s4-ZTa">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="eaH-YJ-eLn" id="r5m-ok-D9I"/>
+                            <outlet property="delegate" destination="eaH-YJ-eLn" id="7Tf-5F-d00"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eCI-pv-Fgg" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="740" y="-1171"/>
+        </scene>
+        <!--RSS-->
         <scene sceneID="OZr-4R-Vex">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ky8-sD-4Pd" sceneMemberID="viewController">
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zxi-Lw-PfW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <navigationController storyboardIdentifier="RSSNavID" automaticallyAdjustsScrollViewInsets="NO" id="ky8-sD-4Pd" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="RSS" image="RSSIcon" id="GBE-S8-e7N"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="W9J-A0-tVO">
@@ -466,7 +521,6 @@
                         <segue destination="ZtE-SL-W5Y" kind="relationship" relationship="rootViewController" id="rgV-fg-xvb"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="zxi-Lw-PfW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="740" y="-428"/>
         </scene>
@@ -586,6 +640,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="FilterIcon" width="25" height="25"/>
         <image name="RSSIcon" width="25" height="25"/>
         <image name="SettingsIcon" width="25" height="25"/>
     </resources>

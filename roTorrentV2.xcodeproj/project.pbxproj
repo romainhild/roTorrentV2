@@ -29,6 +29,8 @@
 		7A1599FD1CEF74D6006B36B0 /* AddRSSController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */; };
 		7A1599FF1CF0B12C006B36B0 /* ThroughFolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */; };
 		7A159A051CF1F2E1006B36B0 /* EditFeedsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */; };
+		7A159A0A1CF2161A006B36B0 /* RSSContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A091CF2161A006B36B0 /* RSSContainerController.swift */; };
+		7A159A0C1CF2165C006B36B0 /* RSSFilterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A0B1CF2165C006B36B0 /* RSSFilterController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,8 @@
 		7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRSSController.swift; sourceTree = "<group>"; };
 		7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThroughFolderController.swift; sourceTree = "<group>"; };
 		7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeedsController.swift; sourceTree = "<group>"; };
+		7A159A091CF2161A006B36B0 /* RSSContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSContainerController.swift; sourceTree = "<group>"; };
+		7A159A0B1CF2165C006B36B0 /* RSSFilterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RSSFilterController.swift; path = ../RSSFilterController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +116,8 @@
 		7A159A061CF20295006B36B0 /* RSS Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				7A159A091CF2161A006B36B0 /* RSSContainerController.swift */,
+				7A159A0B1CF2165C006B36B0 /* RSSFilterController.swift */,
 				7A1599F21CEF5764006B36B0 /* RSSController.swift */,
 				7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */,
 				7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */,
@@ -217,6 +223,7 @@
 				7A028A2D1CEF288000C51F99 /* XMLRPCParser.swift in Sources */,
 				7A1599FB1CEF5DFB006B36B0 /* RSSFeed.swift in Sources */,
 				7A1599FF1CF0B12C006B36B0 /* ThroughFolderController.swift in Sources */,
+				7A159A0A1CF2161A006B36B0 /* RSSContainerController.swift in Sources */,
 				7A028A311CEF28E900C51F99 /* Manager.swift in Sources */,
 				7A1599F31CEF5764006B36B0 /* RSSController.swift in Sources */,
 				7A1599FD1CEF74D6006B36B0 /* AddRSSController.swift in Sources */,
@@ -225,6 +232,7 @@
 				7A028A2F1CEF28D400C51F99 /* rTorrentCall.swift in Sources */,
 				7A028A3B1CEF37AC00C51F99 /* HelperFunctions.swift in Sources */,
 				7A1599F51CEF588F006B36B0 /* RSSParser.swift in Sources */,
+				7A159A0C1CF2165C006B36B0 /* RSSFilterController.swift in Sources */,
 				7A159A051CF1F2E1006B36B0 /* EditFeedsController.swift in Sources */,
 				7A028A291CEF270400C51F99 /* DownloadListController.swift in Sources */,
 				7A028A171CEF26D000C51F99 /* AppDelegate.swift in Sources */,

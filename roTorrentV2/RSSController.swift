@@ -10,16 +10,16 @@ import UIKit
 
 class RSSController: UITableViewController {
     
+    var delegate: RSSControllerDelegate!
+    
     var manager: Manager!
     
     var searchBar: UISearchBar!
+    var recognizer: UIScreenEdgePanGestureRecognizer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let tabBar = self.tabBarController as! TabBarManagerController
-        self.manager = tabBar.manager
-
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: #selector(RSSController.refresh(_:)), forControlEvents: .ValueChanged)
         
@@ -31,6 +31,9 @@ class RSSController: UITableViewController {
         tableView.tableHeaderView = searchBar
         tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height)
         
+        recognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(RSSController.toggleFilter(_:)))
+        recognizer.edges = .Left
+        view.addGestureRecognizer(recognizer)
     }
 
     override func didReceiveMemoryWarning() {
@@ -40,6 +43,14 @@ class RSSController: UITableViewController {
 
     @IBAction func edit(sender: AnyObject) {
         self.performSegueWithIdentifier("EditFeeds", sender: self)
+    }
+    
+    @IBAction func toggleFilter(sender: AnyObject) {
+        if (sender as! NSObject) != recognizer {
+            delegate?.toggleFilterPanel(nil)
+        } else {
+            delegate?.toggleFilterPanel(recognizer)
+        }
     }
     
     func refresh(sender: AnyObject) {
@@ -118,13 +129,6 @@ class RSSController: UITableViewController {
 
 }
 
-extension RSSController: AddRSSDelegate {
-    func addFeed(feed: RSSFeed, sender: AnyObject) {
-        self.manager.appendRSS(feed)
-        self.tableView.reloadData()
-    }
-}
-
 extension RSSController: UISearchBarDelegate {
     func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
         self.tableView.reloadData()
@@ -139,4 +143,10 @@ extension RSSController: ThroughFolderDelegate {
     func controller(controller: ThroughFolderController, didAddItem item: RSSItem) {
         self.tableView.reloadData()
     }
+}
+
+protocol RSSControllerDelegate {
+    func toggleFilterPanel(edgeRecognizer: UIScreenEdgePanGestureRecognizer?)
+    func addFilterPanelController()
+    func animateFilterPanel(shouldExpand: Bool)
 }

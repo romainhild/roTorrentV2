@@ -110,7 +110,7 @@ class Manager: NSObject, NSCoding {
                         return
                     }
                     if let data = data {
-                        print(String(data: data, encoding: NSUTF8StringEncoding))
+//                        print(String(data: data, encoding: NSUTF8StringEncoding))
                         let parser = XMLRPCParser(data: data)
                         let success = parser.parse()
                         if success {
