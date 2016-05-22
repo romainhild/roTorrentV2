@@ -10,7 +10,7 @@
         <scene sceneID="1FJ-F0-jeD">
             <objects>
                 <tableViewController id="JJC-Bz-tkC" customClass="DownloadListController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="tfK-fr-bfz">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="tfK-fr-bfz">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
@@ -436,7 +436,7 @@
         <scene sceneID="dX8-l6-GzO">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ru1-i8-tJJ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" id="Bdo-Lg-zO8"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="SettingsIcon" id="Bdo-Lg-zO8"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="xV2-vK-6De">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -455,7 +455,7 @@
         <scene sceneID="OZr-4R-Vex">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ky8-sD-4Pd" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="RSS" id="GBE-S8-e7N"/>
+                    <tabBarItem key="tabBarItem" title="RSS" image="RSSIcon" id="GBE-S8-e7N"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="W9J-A0-tVO">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -507,6 +507,10 @@
             <point key="canvasLocation" x="2268" y="-1136"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="RSSIcon" width="25" height="25"/>
+        <image name="SettingsIcon" width="25" height="25"/>
+    </resources>
     <inferredMetricsTieBreakers>
         <segue reference="q6Z-sb-AiK"/>
     </inferredMetricsTieBreakers>

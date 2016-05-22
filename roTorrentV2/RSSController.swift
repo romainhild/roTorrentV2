@@ -26,7 +26,8 @@ class RSSController: UITableViewController {
         let mainRect = UIScreen.mainScreen().bounds
         searchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: mainRect.width-20,height: 56))
         searchBar.delegate = self
-        searchBar.placeholder = "Search Torrent"
+        searchBar.placeholder = "Search Item"
+        searchBar.enablesReturnKeyAutomatically = false
         tableView.tableHeaderView = searchBar
         tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height)
         

@@ -13,6 +13,8 @@ class DownloadListController: UITableViewController {
     var torrents = Torrents()
     var manager: Manager!
     let cellId = "TorrentCell"
+    
+    var searchBar: UISearchBar!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +25,14 @@ class DownloadListController: UITableViewController {
         let nib = UINib(nibName: cellId, bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: cellId)
         self.tableView.rowHeight = 78
+
+        let mainRect = UIScreen.mainScreen().bounds
+        searchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: mainRect.width-20,height: 56))
+        searchBar.delegate = self
+        searchBar.placeholder = "Search Torrent"
+        searchBar.enablesReturnKeyAutomatically = false
+        tableView.tableHeaderView = searchBar
+        tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height)
 
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: #selector(DownloadListController.refresh(_:)), forControlEvents: .ValueChanged)
@@ -63,12 +73,13 @@ class DownloadListController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return torrents.count
+        return numberOfTorrentToDispplay()
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath) as! TorrentCell
-        cell.configureForTorrent(torrents[indexPath.row])
+        let torrent = torrentAtIndexPath(indexPath)
+        cell.configureForTorrent(torrent)
         return cell
     }
     
@@ -125,4 +136,30 @@ class DownloadListController: UITableViewController {
     }
     */
 
+}
+
+extension DownloadListController: UISearchBarDelegate {
+    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+        self.tableView.reloadData()
+    }
+    
+    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+        self.searchBar.resignFirstResponder()
+    }
+    
+    func numberOfTorrentToDispplay() -> Int {
+        if let searchText = searchBar.text {
+            return torrents.filter { $0.match(searchText) }.count
+        } else {
+            return torrents.count
+        }
+    }
+    
+    func torrentAtIndexPath(indexPath: NSIndexPath) -> Torrent {
+        if let searchText = searchBar.text {
+            return torrents.filter { $0.match(searchText) }[indexPath.row]
+        } else {
+            return torrents[indexPath.row]
+        }
+    }
 }
