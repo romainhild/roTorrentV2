@@ -11,6 +11,7 @@ import UIKit
 class AddRSSController: UITableViewController, UITextFieldDelegate {
     
     var delegate: AddRSSDelegate!
+    var feedToEdit: RSSFeed?
 
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var linkField: UITextField!
@@ -23,6 +24,12 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
         titleField.becomeFirstResponder()
         titleField.delegate = self
         linkField.delegate = self
+        
+        if let feed = feedToEdit {
+            doneButton.enabled = true
+            titleField.text = feed.title
+            linkField.text = feed.link.absoluteString
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,6 +39,12 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
 
     @IBAction func done(sender: AnyObject) {
         if let url = NSURL(string: linkField.text!) {
+            if let feed = feedToEdit {
+                feed.title = titleField.text!
+                feed.link = url
+                delegate?.editFeed(feed, sender: self)
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
             if let feed = RSSFeed(title: titleField.text!, link: url) {
                 delegate?.addFeed(feed, sender: self)
                 self.dismissViewControllerAnimated(true, completion: nil)
@@ -82,4 +95,5 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
 
 protocol AddRSSDelegate {
     func addFeed(feed: RSSFeed, sender: AnyObject)
+    func editFeed(feed: RSSFeed, sender: AnyObject)
 }

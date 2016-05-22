@@ -28,6 +28,7 @@
 		7A1599FB1CEF5DFB006B36B0 /* RSSFeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1599FA1CEF5DFB006B36B0 /* RSSFeed.swift */; };
 		7A1599FD1CEF74D6006B36B0 /* AddRSSController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */; };
 		7A1599FF1CF0B12C006B36B0 /* ThroughFolderController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */; };
+		7A159A051CF1F2E1006B36B0 /* EditFeedsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		7A1599FA1CEF5DFB006B36B0 /* RSSFeed.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSFeed.swift; sourceTree = "<group>"; };
 		7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddRSSController.swift; sourceTree = "<group>"; };
 		7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThroughFolderController.swift; sourceTree = "<group>"; };
+		7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeedsController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,6 +94,7 @@
 				7A028A381CEF318E00C51F99 /* SettingsController.swift */,
 				7A1599F21CEF5764006B36B0 /* RSSController.swift */,
 				7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */,
+				7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */,
 				7A1599FC1CEF74D6006B36B0 /* AddRSSController.swift */,
 				7A028A341CEF2CDD00C51F99 /* TorrentCell.swift */,
 				7A028A351CEF2CDD00C51F99 /* TorrentCell.xib */,
@@ -198,6 +201,7 @@
 				7A028A2F1CEF28D400C51F99 /* rTorrentCall.swift in Sources */,
 				7A028A3B1CEF37AC00C51F99 /* HelperFunctions.swift in Sources */,
 				7A1599F51CEF588F006B36B0 /* RSSParser.swift in Sources */,
+				7A159A051CF1F2E1006B36B0 /* EditFeedsController.swift in Sources */,
 				7A028A291CEF270400C51F99 /* DownloadListController.swift in Sources */,
 				7A028A171CEF26D000C51F99 /* AppDelegate.swift in Sources */,
 				7A028A2B1CEF284400C51F99 /* Torrent.swift in Sources */,

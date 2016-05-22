@@ -39,21 +39,7 @@ class RSSController: UITableViewController {
     }
 
     @IBAction func edit(sender: AnyObject) {
-        let actionSheet = UIAlertController(title: "Edit RSS Feeds", message: nil, preferredStyle: .ActionSheet)
-        let add = UIAlertAction(title: "Add", style: .Default) { action in
-            self.performSegueWithIdentifier("AddRSS", sender: self)
-        }
-        actionSheet.addAction(add)
-        let remove = UIAlertAction(title: "Remove...", style: .Default) { action in
-        
-        }
-        actionSheet.addAction(remove)
-        let removeAll = UIAlertAction(title: "Remove All", style: .Destructive) { action in
-            self.manager.removeFeed(nil)
-            self.tableView.reloadData()
-        }
-        actionSheet.addAction(removeAll)
-        self.presentViewController(actionSheet, animated: true, completion: nil)
+        self.performSegueWithIdentifier("EditFeeds", sender: self)
     }
     
     func refresh(sender: AnyObject) {
@@ -76,6 +62,11 @@ class RSSController: UITableViewController {
         let cell = tableView.dequeueReusableCellWithIdentifier("RSSCell", forIndexPath: indexPath)
         let item = manager.itemToDisplayAtIndexPath(indexPath, thatMatch: searchBar.text)
         cell.textLabel?.text = item.title
+        if item.hasBeenAdded {
+            cell.accessoryType = .Checkmark
+        } else {
+            cell.accessoryType = .None
+        }
         return cell
     }
     
@@ -86,7 +77,17 @@ class RSSController: UITableViewController {
         let actionSheet = UIAlertController(title: "Add Torrent", message: torrent, preferredStyle: .ActionSheet)
         let add = UIAlertAction(title: "Add", style: .Default) { action in
             let call = RTorrentCall.AddTorrent(url.absoluteString, "")
-            self.manager.call(call) { response in }
+            self.manager.call(call) { response in
+                switch response {
+                case .Success:
+                    item.hasBeenAdded = true
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.tableView.reloadData()
+                    }
+                default:
+                    break
+                }
+            }
         }
         actionSheet.addAction(add)
         let addFolder = UIAlertAction(title: "Add in a directory...", style: .Default) { action in
@@ -102,15 +103,16 @@ class RSSController: UITableViewController {
    // MARK: - Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "AddRSS" {
+        if segue.identifier == "EditFeeds" {
             let navBar = segue.destinationViewController as! UINavigationController
-            let addRss = navBar.topViewController as! AddRSSController
-            addRss.delegate = self
+            let editFeeds = navBar.topViewController as! EditFeedsController
+            editFeeds.manager = self.manager
         } else if segue.identifier == "ThroughFolder" {
             let navBar = segue.destinationViewController as! UINavigationController
             let throughFolder = navBar.topViewController as! ThroughFolderController
             throughFolder.manager = self.manager
             throughFolder.item = sender as? RSSItem
+            throughFolder.delegate = self
         }
     }
 
@@ -130,5 +132,11 @@ extension RSSController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.searchBar.resignFirstResponder()
+    }
+}
+
+extension RSSController: ThroughFolderDelegate {
+    func controller(controller: ThroughFolderController, didAddItem item: RSSItem) {
+        self.tableView.reloadData()
     }
 }

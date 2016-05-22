@@ -10,6 +10,7 @@ import UIKit
 
 class ThroughFolderController: UITableViewController {
     
+    var delegate: ThroughFolderDelegate?
     var manager: Manager!
     var item: RSSItem!
     var folders = [String]()
@@ -69,10 +70,14 @@ class ThroughFolderController: UITableViewController {
         let ok = UIAlertAction(title: "Yes", style: .Default) { action in
             let call = RTorrentCall.AddTorrent(self.item.link.absoluteString, self.currentDir!)
             self.manager.call(call) { response in }
+            self.item.hasBeenAdded = true
+            self.delegate?.controller(self, didAddItem: self.item)
             self.dismissViewControllerAnimated(true, completion: nil)
         }
         actionSheet.addAction(ok)
-        let cancel = UIAlertAction(title: "No", style: .Cancel) { action in
+        let no = UIAlertAction(title: "No", style: .Default, handler: nil)
+        actionSheet.addAction(no)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { action in
             self.dismissViewControllerAnimated(true, completion: nil)
         }
         actionSheet.addAction(cancel)
@@ -116,7 +121,12 @@ class ThroughFolderController: UITableViewController {
             controller.manager = self.manager
             controller.item = self.item
             controller.currentDir = dir
+            controller.delegate = self.delegate
         }
     }
 
+}
+
+protocol ThroughFolderDelegate {
+    func controller(controller: ThroughFolderController, didAddItem item: RSSItem)
 }
