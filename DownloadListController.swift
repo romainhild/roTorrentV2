@@ -11,7 +11,6 @@ import UIKit
 class DownloadListController: UITableViewController {
     
     var delegate: DownloadListControllerDelegate?
-    var torrents = Torrents()
     var manager: Manager!
     let cellId = "TorrentCell"
     
@@ -44,13 +43,14 @@ class DownloadListController: UITableViewController {
     }
     
     func refresh(sender: AnyObject) {
-        self.refreshControl?.endRefreshing()
         let call = manager.callToInitList()
         manager.call(call) {response in
             switch response {
             case .Success(let xmltype):
                 dispatch_async(dispatch_get_main_queue()) {
-                    self.torrents.initWithXmlArray(xmltype)
+                    self.refreshControl?.endRefreshing()
+                    self.manager.torrents.initWithXmlArray(xmltype)
+                    self.manager.updateTorrentsToDiplay()
                     self.tableView.reloadData()
                 }
             case .Failure(let error):
@@ -58,6 +58,7 @@ class DownloadListController: UITableViewController {
                 let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .Alert)
                 alert.addAction(ok)
                 dispatch_async(dispatch_get_main_queue()) {
+                    self.refreshControl?.endRefreshing()
                     self.presentViewController(alert, animated: true, completion: nil)
                 }
             }
@@ -84,12 +85,12 @@ class DownloadListController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return numberOfTorrentToDispplay()
+        return manager.numberOfTorrentToDispplay(searchBar.text)
     }
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath) as! TorrentCell
-        let torrent = torrentAtIndexPath(indexPath)
+        let torrent = manager.torrentAtIndexPath(indexPath, searchText: searchBar.text)
         cell.configureForTorrent(torrent)
         return cell
     }
@@ -156,22 +157,6 @@ extension DownloadListController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.searchBar.resignFirstResponder()
-    }
-    
-    func numberOfTorrentToDispplay() -> Int {
-        if let searchText = searchBar.text {
-            return torrents.filter { $0.match(searchText) }.count
-        } else {
-            return torrents.count
-        }
-    }
-    
-    func torrentAtIndexPath(indexPath: NSIndexPath) -> Torrent {
-        if let searchText = searchBar.text {
-            return torrents.filter { $0.match(searchText) }[indexPath.row]
-        } else {
-            return torrents[indexPath.row]
-        }
     }
 }
 

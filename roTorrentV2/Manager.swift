@@ -18,9 +18,23 @@ class Manager: NSObject, NSCoding {
     var mutableRequest: NSMutableURLRequest?
     var dataTask: NSURLSessionDataTask?
     
-    var sortDlIn = SortingOrder.Ascending
-    var sortDlBy = SortingBy.Date
-    var filterDlBy = FilterBy.All
+    var torrents = Torrents()
+    var torrentsToDisplay = [Torrent]()
+    var sortDlIn = SortingOrder.Ascending {
+        didSet {
+            updateTorrentsToDiplay()
+        }
+    }
+    var sortDlBy = SortingBy.Date {
+        didSet {
+            updateTorrentsToDiplay()
+        }
+    }
+    var filterDlBy = FilterBy.All {
+        didSet {
+            updateTorrentsToDiplay()
+        }
+    }
     
     var feeds = [RSSFeed]()
     var feedToDisplay: RSSFeed? {
@@ -60,6 +74,18 @@ class Manager: NSObject, NSCoding {
         if let feeds = aDecoder.decodeObjectForKey("feeds") as? [RSSFeed] {
             self.feeds = feeds
         }
+        if let feedToDisplay = aDecoder.decodeObjectForKey("feedToDisplay") as? RSSFeed {
+            self.feedToDisplay = feedToDisplay
+        }
+        if let sortIn = SortingOrder(rawValue: aDecoder.decodeIntegerForKey("sortDlIn")) {
+            self.sortDlIn = sortIn
+        }
+        if let sortBy = SortingBy(rawValue: aDecoder.decodeIntegerForKey("sortDlBy")) {
+            self.sortDlBy = sortBy
+        }
+        if let filterBy = FilterBy(rawValue: aDecoder.decodeIntegerForKey("filterDlBy")) {
+            self.filterDlBy = filterBy
+        }
         
         super.init()
 
@@ -89,6 +115,12 @@ class Manager: NSObject, NSCoding {
             aCoder.encodeObject(path, forKey: "path")
         }
         aCoder.encodeObject(feeds, forKey: "feeds")
+        if let feedToDisplay = feedToDisplay {
+            aCoder.encodeObject(feedToDisplay, forKey: "feedToDisplay")
+        }
+        aCoder.encodeInteger(sortDlIn.rawValue, forKey: "sortDlIn")
+        aCoder.encodeInteger(sortDlBy.rawValue, forKey: "sortDlBy")
+        aCoder.encodeInteger(filterDlBy.rawValue, forKey: "filterDlBy")
     }
     
     func call(call: RTorrentCall, completionHandler: Response<XMLRPCType,NSError> -> Void) {
@@ -212,6 +244,27 @@ class Manager: NSObject, NSCoding {
             return itemsToDisplay.filter { $0.match(searchText) }[indexPath.row]
         } else {
             return itemsToDisplay[indexPath.row]
+        }
+    }
+    
+    func updateTorrentsToDiplay() {
+        torrentsToDisplay = torrents.filter { $0.isFilterBy(filterDlBy) }
+        torrentsToDisplay.sortInPlace { $0.isOrderedBefore($1, by: sortDlBy, inOrder: sortDlIn) }
+    }
+    
+    func numberOfTorrentToDispplay(searchText: String?) -> Int {
+        if let searchText = searchText {
+            return torrentsToDisplay.filter { $0.match(searchText) }.count
+        } else {
+            return torrentsToDisplay.count
+        }
+    }
+    
+    func torrentAtIndexPath(indexPath: NSIndexPath, searchText: String?) -> Torrent {
+        if let searchText = searchText {
+            return torrentsToDisplay.filter { $0.match(searchText) }[indexPath.row]
+        } else {
+            return torrentsToDisplay[indexPath.row]
         }
     }
 }

@@ -308,6 +308,69 @@ class Torrent : NSObject
             return true
         }
     }
+
+    func isFilterBy(filter: FilterBy = .All) -> Bool {
+        let filtered: Bool
+        switch filter {
+        case .All:
+            filtered = true
+        case .Sending:
+            filtered = speedUP > 0
+        case .Receiving:
+            filtered = speedDL > 0
+        case .Seeding:
+            filtered = (sizeLeft == 0)
+        case .Leeching:
+            filtered = (sizeLeft != 0)
+        case .Error:
+            filtered = (message != nil)
+        case .Pause:
+            filtered = (isActive == 0)
+        case .Stop:
+            filtered = (state == 0)
+        case .Active:
+            filtered = (isActive == 1) && (state == 1)
+//        case .Directory(let dir):
+//            filtered = (directory == dir)
+//        case .Tracker(let track):
+//            filtered = listOfTrackers.reduce(false) { $0 || NSURL(string: $1)!.host! == track }
+        }
+        return filtered
+    }
+    
+    func isOrderedBefore(second: Torrent, by sort: SortingBy, inOrder order: SortingOrder) -> Bool {
+        let b: Bool
+        switch sort {
+        case .Date:
+            switch date.compare(second.date) {
+            case .OrderedAscending:
+                b = true
+            case .OrderedDescending, .OrderedSame:
+                b = false
+            }
+        case .Name:
+            switch name.compare(second.name) {
+            case .OrderedAscending:
+                b = true
+            case .OrderedDescending, .OrderedSame:
+                b = false
+            }
+        case .Send:
+            b = sizeUP < second.sizeUP
+        case .Size:
+            b = size < second.size
+            //        case .Seeders:
+            //            b = true
+            //        case .Leechers:
+            //            b = true
+        }
+        switch order {
+        case .Ascending:
+            return b
+        case .Descending:
+            return !b
+        }
+    }
 }
 
 class Torrents {
