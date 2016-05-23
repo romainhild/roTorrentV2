@@ -8,36 +8,6 @@
 
 import Foundation
 
-enum Response<SuccessType, FailureType>
-{
-    case Success(SuccessType)
-    case Failure(FailureType)
-}
-
-enum SortingOrder: Int {
-    case Ascending = 0
-    case Descending
-}
-
-enum SortingBy: Int {
-    case Date = 0
-    case Name
-    case Size
-    case Send
-}
-
-enum FilterBy: Int {
-    case All = 0
-    case Sending
-    case Receiving
-    case Seeding
-    case Leeching
-    case Error
-    case Pause
-    case Stop
-    case Active
-}
-
 class Manager: NSObject, NSCoding {
     
     let urlComponents: NSURLComponents
@@ -47,6 +17,10 @@ class Manager: NSObject, NSCoding {
     let session = NSURLSession.sharedSession()
     var mutableRequest: NSMutableURLRequest?
     var dataTask: NSURLSessionDataTask?
+    
+    var sortDlIn = SortingOrder.Ascending
+    var sortDlBy = SortingBy.Date
+    var filterDlBy = FilterBy.All
     
     var feeds = [RSSFeed]()
     var feedToDisplay: RSSFeed? {
@@ -241,3 +215,96 @@ class Manager: NSObject, NSCoding {
         }
     }
 }
+
+enum Response<SuccessType, FailureType>
+{
+    case Success(SuccessType)
+    case Failure(FailureType)
+}
+
+enum SortingOrder: Int {
+    case Ascending = 0
+    case Descending
+    
+    static var count: Int { return SortingOrder.Descending.rawValue + 1}
+    static func stringOf(index: Int) -> String {
+        if let sortOrder = SortingOrder(rawValue: index) {
+            switch sortOrder {
+            case .Ascending:
+                return "Ascending"
+            case .Descending:
+                return "Descending"
+            }
+        } else {
+            return ""
+        }
+    }
+}
+
+enum SortingBy: Int {
+    case Date = 0
+    case Name
+    case Size
+    case Send
+    
+    static var count: Int { return SortingBy.Send.rawValue + 1}
+    static func stringOf(index: Int) -> String {
+        if let sortBy = SortingBy(rawValue: index) {
+            switch sortBy {
+            case .Date:
+                return "Date"
+            case .Name:
+                return "Name"
+            case .Size:
+                return "Size"
+            case .Send:
+                return "Send"
+            }
+        } else {
+            return ""
+        }
+    }
+}
+
+enum FilterBy: Int {
+    case All = 0
+    case Sending
+    case Receiving
+    case Seeding
+    case Leeching
+    case Error
+    case Pause
+    case Stop
+    case Active
+    
+    static var count: Int { return FilterBy.Active.rawValue + 1}
+    static func stringOf(index: Int) -> String {
+        if let filterBy = FilterBy(rawValue: index) {
+            switch filterBy {
+            case .All:
+                return "All"
+            case .Sending:
+                return "Sending"
+            case .Receiving:
+                return "Receiving"
+            case .Seeding:
+                return "Seeding"
+            case .Leeching:
+                return "Leeching"
+            case .Error:
+                return "Error"
+            case .Pause:
+                return "Pause"
+            case .Stop:
+                return "Stop"
+            case .Active:
+                return "Active"
+                
+            }
+        } else {
+            return ""
+        }
+    }
+    
+}
+

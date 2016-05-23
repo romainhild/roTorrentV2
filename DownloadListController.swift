@@ -21,9 +21,6 @@ class DownloadListController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        let tabBar = self.tabBarController as! TabBarManagerController
-//        self.manager = tabBar.manager
-
         let nib = UINib(nibName: cellId, bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: cellId)
         self.tableView.rowHeight = 78

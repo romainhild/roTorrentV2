@@ -15,6 +15,7 @@ class RSSFilterController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.tableView.contentInset = UIEdgeInsetsMake(0, 0, 49, 0)
     }
 
     override func didReceiveMemoryWarning() {
@@ -70,14 +71,14 @@ class RSSFilterController: UITableViewController {
         return 44+20
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
         if indexPath.row == 0 {
             manager.feedToDisplay = nil
         } else {
             manager.feedToDisplay = manager.feeds[indexPath.row-1]
         }
-        tableView.deselectRowAtIndexPath(indexPath, animated: true)
         tableView.reloadData()
+        return nil
     }
 
 }
