@@ -14,6 +14,30 @@ enum Response<SuccessType, FailureType>
     case Failure(FailureType)
 }
 
+enum SortingOrder: Int {
+    case Ascending = 0
+    case Descending
+}
+
+enum SortingBy: Int {
+    case Date = 0
+    case Name
+    case Size
+    case Send
+}
+
+enum FilterBy: Int {
+    case All = 0
+    case Sending
+    case Receiving
+    case Seeding
+    case Leeching
+    case Error
+    case Pause
+    case Stop
+    case Active
+}
+
 class Manager: NSObject, NSCoding {
     
     let urlComponents: NSURLComponents

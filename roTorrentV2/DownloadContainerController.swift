@@ -1,36 +1,35 @@
 //
-//  RSSContainerController.swift
+//  DownloadContainerController.swift
 //  roTorrentV2
 //
-//  Created by Romain Hild on 22/05/2016.
+//  Created by Romain Hild on 23/05/2016.
 //  Copyright © 2016 Romain Hild. All rights reserved.
 //
 
 import UIKit
 
-class RSSContainerController: UIViewController {
+class DownloadContainerController: UIViewController {
     
+    var downloadController: DownloadListController!
     var navController: UINavigationController!
-    var rssController: RSSController!
     var panelCollapsed = true {
         didSet {
             showShadowForCenterViewController(!panelCollapsed)
         }
     }
-    var filterController: RSSFilterController?
+    var filterController: DownloadFilterController?
     let centerPanelExpandedOffset: CGFloat = 100
-    
     var recognizer: UITapGestureRecognizer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rssController = UIStoryboard.rssViewController()
-        rssController.delegate = self
+        downloadController = UIStoryboard.downloadsViewController()
+        downloadController.delegate = self
         let tabBar = self.tabBarController as! TabBarManagerController
-        rssController.manager = tabBar.manager
+        downloadController.manager = tabBar.manager
         
-        navController = UINavigationController(rootViewController: rssController)
+        navController = UINavigationController(rootViewController: downloadController)
         navController.navigationBar.barStyle = .Black
         view.addSubview(navController.view)
         addChildViewController(navController)
@@ -53,36 +52,24 @@ class RSSContainerController: UIViewController {
             }
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 private extension UIStoryboard {
     class func mainStoryboard() -> UIStoryboard { return UIStoryboard(name: "Main", bundle: NSBundle.mainBundle()) }
     
-    class func rssFilterViewController() -> RSSFilterController? {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("RSSFilterID") as? RSSFilterController
+    class func downloadsFilterViewController() -> DownloadFilterController? {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("DownloadsFilterID") as? DownloadFilterController
     }
-    class func rssViewController() -> RSSController? {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("RSSID") as? RSSController
-    }
-    
-    class func rssNavController() -> UINavigationController? {
-        return mainStoryboard().instantiateViewControllerWithIdentifier("RSSNavID") as? UINavigationController
+    class func downloadsViewController() -> DownloadListController? {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("DownloadsID") as? DownloadListController
     }
     
+    class func downloadsNavController() -> UINavigationController? {
+        return mainStoryboard().instantiateViewControllerWithIdentifier("DownloadsNavID") as? UINavigationController
+    }
 }
 
-extension RSSContainerController: RSSControllerDelegate {
+extension DownloadContainerController: DownloadListControllerDelegate {
     func toggleFilterPanel(edgeRecognizer: UIScreenEdgePanGestureRecognizer?) {
         if let edgeRecognizer = edgeRecognizer {
             let position = edgeRecognizer.locationInView(nil).x
@@ -93,37 +80,34 @@ extension RSSContainerController: RSSControllerDelegate {
                 animateFilterPanelAt(position)
             case .Ended:
                 animateFilterPanel(position > 100)
-                rssController.view.addGestureRecognizer(recognizer)
-                //                tabBarController!.tabBar.translucent = false
-            //                centerViewController.extendedLayoutIncludesOpaqueBars = true
+                downloadController.view.addGestureRecognizer(recognizer)
             default:
                 break
             }
         } else {
             if panelCollapsed {
-                rssController.view.addGestureRecognizer(recognizer)
+                downloadController.view.addGestureRecognizer(recognizer)
                 addFilterPanelController()
             } else {
-                rssController.view.removeGestureRecognizer(recognizer)
-                //                tabBarController!.tabBar.translucent = true
-                //                centerViewController.extendedLayoutIncludesOpaqueBars = false
-                rssController.tableView.reloadData()
+                downloadController.view.removeGestureRecognizer(recognizer)
+                downloadController.tableView.reloadData()
             }
+            
             animateFilterPanel(panelCollapsed)
         }
     }
     
     func addFilterPanelController() {
         if filterController == nil {
-            filterController = UIStoryboard.rssFilterViewController()
+            filterController = UIStoryboard.downloadsFilterViewController()
             let tabBar = self.tabBarController as! TabBarManagerController
             filterController?.manager = tabBar.manager
             
             addChildSidePanelController(filterController!)
         }
     }
-    
-    func addChildSidePanelController(filterController: RSSFilterController) {
+
+    func addChildSidePanelController(filterController: DownloadFilterController) {
         view.insertSubview(filterController.view, atIndex: 0)
         
         addChildViewController(filterController)
@@ -150,14 +134,11 @@ extension RSSContainerController: RSSControllerDelegate {
             self.navController.view.frame.origin.x = targetPosition
             let tabBar = self.tabBarController as! TabBarManagerController
             tabBar.tabBar.translucent = false
-            
-//            self.filterController?.view.frame.origin.x = -targetPosition
-            //            tabBar.view.frame.origin.x = targetPosition
             }, completion: completion)
     }
     
     func animateFilterPanelAt(at: CGFloat) {
-        let pos = min(CGRectGetWidth(rssController.view.frame) - centerPanelExpandedOffset, at)
+        let pos = min(CGRectGetWidth(downloadController.view.frame) - centerPanelExpandedOffset, at)
         animateCenterPanelXPosition(pos, withDuration: 0)
     }
     
@@ -169,3 +150,4 @@ extension RSSContainerController: RSSControllerDelegate {
         }
     }
 }
+

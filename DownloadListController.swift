@@ -10,17 +10,19 @@ import UIKit
 
 class DownloadListController: UITableViewController {
     
+    var delegate: DownloadListControllerDelegate?
     var torrents = Torrents()
     var manager: Manager!
     let cellId = "TorrentCell"
     
     var searchBar: UISearchBar!
+    var recognizer: UIScreenEdgePanGestureRecognizer!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let tabBar = self.tabBarController as! TabBarManagerController
-        self.manager = tabBar.manager
+//        let tabBar = self.tabBarController as! TabBarManagerController
+//        self.manager = tabBar.manager
 
         let nib = UINib(nibName: cellId, bundle: nil)
         self.tableView.registerNib(nib, forCellReuseIdentifier: cellId)
@@ -37,6 +39,10 @@ class DownloadListController: UITableViewController {
         self.refreshControl = UIRefreshControl()
         self.refreshControl?.addTarget(self, action: #selector(DownloadListController.refresh(_:)), forControlEvents: .ValueChanged)
         
+        recognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(DownloadListController.filter(_:)))
+        recognizer.edges = .Left
+        view.addGestureRecognizer(recognizer)
+
         refresh(self)
     }
     
@@ -61,6 +67,14 @@ class DownloadListController: UITableViewController {
         }
     }
 
+    @IBAction func filter(sender: AnyObject) {
+        if (sender as! NSObject) != recognizer {
+            delegate?.toggleFilterPanel(nil)
+        } else {
+            delegate?.toggleFilterPanel(recognizer)
+        }
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -162,4 +176,8 @@ extension DownloadListController: UISearchBarDelegate {
             return torrents[indexPath.row]
         }
     }
+}
+
+protocol DownloadListControllerDelegate {
+    func toggleFilterPanel(edgeRecognizer: UIScreenEdgePanGestureRecognizer?)
 }

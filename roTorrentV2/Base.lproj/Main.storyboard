@@ -9,7 +9,7 @@
         <!--Downloads-->
         <scene sceneID="1FJ-F0-jeD">
             <objects>
-                <tableViewController id="JJC-Bz-tkC" customClass="DownloadListController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="DownloadsID" id="JJC-Bz-tkC" customClass="DownloadListController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" keyboardDismissMode="interactive" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="tfK-fr-bfz">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -31,11 +31,17 @@
                             <outlet property="delegate" destination="JJC-Bz-tkC" id="AB9-5g-Tyt"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Downloads" id="A2A-Eu-PaS"/>
+                    <navigationItem key="navigationItem" title="Downloads" id="A2A-Eu-PaS">
+                        <barButtonItem key="leftBarButtonItem" image="FilterIcon" id="UA9-qM-IIg">
+                            <connections>
+                                <action selector="filter:" destination="JJC-Bz-tkC" id="oyg-S1-eUQ"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cet-Uj-543" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1552" y="305"/>
+            <point key="canvasLocation" x="2268" y="305"/>
         </scene>
         <!--Title-->
         <scene sceneID="UNJ-vW-xoW">
@@ -234,7 +240,7 @@
         <!--Navigation Controller-->
         <scene sceneID="hwY-Qa-IAW">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="GqF-xa-JMW" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="DownloadsNavID" automaticallyAdjustsScrollViewInsets="NO" id="GqF-xa-JMW" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" systemItem="downloads" id="ACn-gh-Bzg"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="elS-aL-hd9">
@@ -248,7 +254,47 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zkW-5B-yXa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="740" y="305"/>
+            <point key="canvasLocation" x="1552" y="305"/>
+        </scene>
+        <!--Download Filter Controller-->
+        <scene sceneID="kag-5N-dka">
+            <objects>
+                <tableViewController storyboardIdentifier="DownloadsFilterID" id="ygm-Rn-Tt6" customClass="DownloadFilterController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="Zoh-RX-n9o">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="sectionIndexBackgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="FilterCell" textLabel="MOD-x9-Ksc" style="IBUITableViewCellStyleDefault" id="GmG-BH-YUL">
+                                <rect key="frame" x="0.0" y="28" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="GmG-BH-YUL" id="6gP-Ld-ZM1">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="MOD-x9-Ksc">
+                                            <rect key="frame" x="15" y="0.0" width="570" height="43"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="16"/>
+                                            <color key="textColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="ygm-Rn-Tt6" id="j27-Pb-jnE"/>
+                            <outlet property="delegate" destination="ygm-Rn-Tt6" id="nZH-3g-SHK"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="eRL-fy-rm8" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1558" y="1020"/>
         </scene>
         <!--Settings-->
         <scene sceneID="riC-QZ-abf">
@@ -416,7 +462,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="adR-Gd-XI8" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1552" y="1014"/>
+            <point key="canvasLocation" x="1552" y="1748"/>
         </scene>
         <!--Tab Bar Manager Controller-->
         <scene sceneID="TQB-P3-ZLI">
@@ -428,20 +474,39 @@
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                     </tabBar>
                     <connections>
-                        <segue destination="GqF-xa-JMW" kind="relationship" relationship="viewControllers" id="Ttv-bJ-SDU"/>
+                        <segue destination="Uj9-LD-ekS" kind="relationship" relationship="viewControllers" id="tSA-05-deN"/>
                         <segue destination="HPs-5t-jSZ" kind="relationship" relationship="viewControllers" id="SLG-q0-SJw"/>
                         <segue destination="Ru1-i8-tJJ" kind="relationship" relationship="viewControllers" id="UOe-y5-f4Z"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Dhq-bl-eXh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-56" y="305"/>
+            <point key="canvasLocation" x="-72" y="305"/>
+        </scene>
+        <!--Download Container Controller-->
+        <scene sceneID="Mq6-1W-tTX">
+            <objects>
+                <viewController id="Uj9-LD-ekS" customClass="DownloadContainerController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="0Bg-fg-9On"/>
+                        <viewControllerLayoutGuide type="bottom" id="YUK-vd-0iS"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="soo-5P-Tk8">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <tabBarItem key="tabBarItem" systemItem="downloads" id="6Bf-eE-sgS"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KNn-Gg-m4A" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="740" y="676"/>
         </scene>
         <!--Settings-->
         <scene sceneID="dX8-l6-GzO">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="Ru1-i8-tJJ" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Settings" image="SettingsIcon" id="Bdo-Lg-zO8"/>
+                    <tabBarItem key="tabBarItem" title="Settings" image="SettingsIcon" selectedImage="SettingsFillIcon" id="Bdo-Lg-zO8"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="xV2-vK-6De">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -454,7 +519,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="D4m-zs-f3d" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="740" y="1014"/>
+            <point key="canvasLocation" x="740" y="1748"/>
         </scene>
         <!--RSS-->
         <scene sceneID="P7J-V0-ptf">
@@ -469,7 +534,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <tabBarItem key="tabBarItem" title="RSS" image="RSSIcon" id="SWV-Dv-nVF"/>
+                    <tabBarItem key="tabBarItem" title="RSS" image="RSSIcon" selectedImage="RSSFillIcon" id="SWV-Dv-nVF"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8Vf-8c-v8r" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -651,7 +716,9 @@
     </scenes>
     <resources>
         <image name="FilterIcon" width="25" height="25"/>
+        <image name="RSSFillIcon" width="25" height="25"/>
         <image name="RSSIcon" width="25" height="25"/>
+        <image name="SettingsFillIcon" width="25" height="25"/>
         <image name="SettingsIcon" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
