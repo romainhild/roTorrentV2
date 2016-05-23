@@ -102,6 +102,12 @@ class DownloadListController: UITableViewController {
     override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
         return 78
     }
+    
+    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+        let torrent = manager.torrentAtIndexPath(indexPath, searchText: searchBar.text)
+        performSegueWithIdentifier("DetailTorrent", sender: torrent)
+        return nil
+    }
 
     /*
     // Override to support conditional editing of the table view.
@@ -138,15 +144,16 @@ class DownloadListController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "DetailTorrent" {
+            let controller = segue.destinationViewController as! DetailTorrentController
+            controller.manager = self.manager
+            let torrent = sender as! Torrent
+            controller.torrent = torrent
+        }
     }
-    */
 
 }
 

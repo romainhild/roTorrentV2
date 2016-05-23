@@ -31,3 +31,19 @@ class DateFormatterSingleton {
         return dateFormatter.dateFromString(String(int))
     }
 }
+
+class ShortFormatterSingleton {
+    static let sharedInstance = ShortFormatterSingleton()
+    
+    var dateFormatter: NSDateFormatter
+    
+    private init() {
+        dateFormatter = NSDateFormatter()
+        dateFormatter.dateStyle = .MediumStyle
+        dateFormatter.timeStyle = .MediumStyle
+    }
+    
+    func stringFromDate(date: NSDate) -> String {
+        return dateFormatter.stringFromDate(date)
+    }
+}
