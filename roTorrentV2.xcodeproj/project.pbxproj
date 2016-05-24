@@ -43,7 +43,7 @@
 		7A028A1D1CEF26D000C51F99 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7A028A201CEF26D000C51F99 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7A028A221CEF26D000C51F99 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7A028A281CEF270400C51F99 /* DownloadListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DownloadListController.swift; path = ../DownloadListController.swift; sourceTree = "<group>"; };
+		7A028A281CEF270400C51F99 /* DownloadListController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadListController.swift; sourceTree = "<group>"; };
 		7A028A2A1CEF284400C51F99 /* Torrent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Torrent.swift; sourceTree = "<group>"; };
 		7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XMLRPCParser.swift; sourceTree = "<group>"; };
 		7A028A2E1CEF28D400C51F99 /* rTorrentCall.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = rTorrentCall.swift; sourceTree = "<group>"; };
@@ -62,7 +62,7 @@
 		7A1599FE1CF0B12C006B36B0 /* ThroughFolderController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ThroughFolderController.swift; sourceTree = "<group>"; };
 		7A159A041CF1F2E0006B36B0 /* EditFeedsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditFeedsController.swift; sourceTree = "<group>"; };
 		7A159A091CF2161A006B36B0 /* RSSContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSContainerController.swift; sourceTree = "<group>"; };
-		7A159A0B1CF2165C006B36B0 /* RSSFilterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RSSFilterController.swift; path = ../RSSFilterController.swift; sourceTree = "<group>"; };
+		7A159A0B1CF2165C006B36B0 /* RSSFilterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RSSFilterController.swift; sourceTree = "<group>"; };
 		7A159A0E1CF2F9FA006B36B0 /* DownloadFilterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadFilterController.swift; sourceTree = "<group>"; };
 		7A159A101CF2FA11006B36B0 /* DownloadContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadContainerController.swift; sourceTree = "<group>"; };
 		7A159A121CF3620E006B36B0 /* DetailTorrentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTorrentController.swift; sourceTree = "<group>"; };
@@ -110,8 +110,8 @@
 				7A028A2C1CEF288000C51F99 /* XMLRPCParser.swift */,
 				7A159A081CF202D1006B36B0 /* RSS Model */,
 				7A1599F81CEF5CEA006B36B0 /* DateFormatterSingleton.swift */,
-				7A028A1A1CEF26D000C51F99 /* Main.storyboard */,
 				7A028A3A1CEF37AC00C51F99 /* HelperFunctions.swift */,
+				7A028A1A1CEF26D000C51F99 /* Main.storyboard */,
 				7A028A1D1CEF26D000C51F99 /* Assets.xcassets */,
 				7A028A1F1CEF26D000C51F99 /* LaunchScreen.storyboard */,
 				7A028A221CEF26D000C51F99 /* Info.plist */,
