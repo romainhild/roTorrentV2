@@ -29,6 +29,7 @@ class DetailTorrentController: UITableViewController {
     @IBOutlet weak var dlLabel: UILabel!
     @IBOutlet weak var directoryLabel: UILabel!
     @IBOutlet weak var filesLabel: UILabel!
+    @IBOutlet weak var pathLabel: UILabel!
     @IBOutlet weak var trackersLabel: UILabel!
     
     override func viewDidLoad() {
@@ -43,8 +44,7 @@ class DetailTorrentController: UITableViewController {
         leftLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.sizeLeft, countStyle: NSByteCountFormatterCountStyle.File)
         dateLabel.text = ShortFormatterSingleton.sharedInstance.stringFromDate(torrent.date)
         hashLabel.text = torrent.hashT
-        seedersLabel.text = String(torrent.seeders)
-        leechersLabel.text = String(torrent.leechers)
+        updateSeedersLeechersLabels()
         
         messageLabel.text = ""
         if let msg = torrent.message {
@@ -61,15 +61,16 @@ class DetailTorrentController: UITableViewController {
         upLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.speedUP, countStyle: NSByteCountFormatterCountStyle.File)
         
         directoryLabel.text = torrent.directory
+        pathLabel.text = torrent.path
         filesLabel.text = String(torrent.numberOfFiles)
-        let fileCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 1, inSection: 0))
+        let fileCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 2, inSection: 3))
         let myBgView = UIView(frame: CGRectZero)
         myBgView.backgroundColor = UIColor.blackColor()
         fileCell.backgroundView = myBgView
         fileCell.accessoryType = .DisclosureIndicator
         
         trackersLabel.text = String(torrent.numberOfTrackers)
-        let trackerCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 1))
+        let trackerCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 4))
         let myBgView2 = UIView(frame: CGRectZero)
         myBgView2.backgroundColor = UIColor.blackColor()
         trackerCell.backgroundView = myBgView2
@@ -80,12 +81,30 @@ class DetailTorrentController: UITableViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func updateSeedersLeechersLabels() {
+        if let allSeeders = torrent.allSeeders {
+            seedersLabel.text = "\(torrent.seeders)(\(allSeeders))"
+        } else {
+            seedersLabel.text = String(torrent.seeders)
+        }
+        if let allLeechers = torrent.allLeechers {
+            leechersLabel.text = "\(torrent.leechers)(\(allLeechers))"
+        } else {
+            leechersLabel.text = String(torrent.leechers)
+        }
+    }
 
     // MARK: - Table view data source
-
-//    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-//        return super.tableView(tableView, cellForRowAtIndexPath: indexPath)
-//    }
+    
+    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+        if indexPath.section == 3 && indexPath.row == 2 {
+            performSegueWithIdentifier("DirTracker", sender: true)
+        } else if indexPath.section == 4 && indexPath.row == 0 {
+            performSegueWithIdentifier("DirTracker", sender: false)
+        }
+        return nil
+    }
 
     /*
     // Override to support conditional editing of the table view.
@@ -122,14 +141,19 @@ class DetailTorrentController: UITableViewController {
     }
     */
 
-    /*
     // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        let controller = segue.destinationViewController as! DirTrackerController
+        controller.manager = self.manager
+        controller.torrent = self.torrent
+        controller.isDir = sender as! Bool
+        controller.delegate = self
     }
-    */
+}
 
+extension DetailTorrentController: DirTrackerControllerDelegate {
+    func trackersHaveBeenInitialized() {
+        updateSeedersLeechersLabels()
+    }
 }

@@ -63,6 +63,38 @@ class Torrent : NSObject
         setNumberOfTrackers(array[18])
     }
     
+    func initFiles(xmlArray: XMLRPCType) {
+        switch xmlArray {
+        case .XMLRPCArray(let array):
+            for xmlItem in array {
+                switch xmlItem {
+                case .XMLRPCArray(let arrayFile):
+                    setFile(arrayFile)
+                default:
+                    break
+                }
+            }
+        default:
+            break
+        }
+    }
+    
+    func initTrackers(xmlArray: XMLRPCType) {
+        switch xmlArray {
+        case .XMLRPCArray(let array):
+            for xmlItem in array {
+                switch xmlItem {
+                case .XMLRPCArray(let arrayTracker):
+                    setTracker(arrayTracker)
+                default:
+                    break
+                }
+            }
+        default:
+            break
+        }
+    }
+    
     func setName(xmlName: XMLRPCType) {
         switch xmlName {
         case .XMLRPCString(let newName):
@@ -274,8 +306,8 @@ class Torrent : NSObject
         switch xmlSeeders {
         case .XMLRPCInt(let seed):
             listOfTrackersSeeders.append(seed)
-            if var allSeeders = allSeeders {
-                allSeeders += seed
+            if var _ = allSeeders {
+                self.allSeeders! += seed
             } else {
                 allSeeders = seed
             }
@@ -287,8 +319,8 @@ class Torrent : NSObject
         switch xmlLeechers {
         case .XMLRPCInt(let leech):
             listOfTrackersLeechers.append(leech)
-            if var allLeechers = allLeechers {
-                allLeechers += leech
+            if var _ = allLeechers {
+                self.allLeechers! += leech
             } else {
                 allLeechers = leech
             }

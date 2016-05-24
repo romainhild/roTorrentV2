@@ -34,6 +34,7 @@
 		7A159A0F1CF2F9FA006B36B0 /* DownloadFilterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A0E1CF2F9FA006B36B0 /* DownloadFilterController.swift */; };
 		7A159A111CF2FA12006B36B0 /* DownloadContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A101CF2FA11006B36B0 /* DownloadContainerController.swift */; };
 		7A159A131CF3620E006B36B0 /* DetailTorrentController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A159A121CF3620E006B36B0 /* DetailTorrentController.swift */; };
+		7AEEA43A1CF4E028005C370B /* DirTrackerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AEEA4391CF4E028005C370B /* DirTrackerController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -66,6 +67,7 @@
 		7A159A0E1CF2F9FA006B36B0 /* DownloadFilterController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadFilterController.swift; sourceTree = "<group>"; };
 		7A159A101CF2FA11006B36B0 /* DownloadContainerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DownloadContainerController.swift; sourceTree = "<group>"; };
 		7A159A121CF3620E006B36B0 /* DetailTorrentController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailTorrentController.swift; sourceTree = "<group>"; };
+		7AEEA4391CF4E028005C370B /* DirTrackerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DirTrackerController.swift; path = DownloadControllers/DirTrackerController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -158,6 +160,7 @@
 				7A028A281CEF270400C51F99 /* DownloadListController.swift */,
 				7A159A0E1CF2F9FA006B36B0 /* DownloadFilterController.swift */,
 				7A159A121CF3620E006B36B0 /* DetailTorrentController.swift */,
+				7AEEA4391CF4E028005C370B /* DirTrackerController.swift */,
 			);
 			name = "Downloads Controllers";
 			sourceTree = "<group>";
@@ -247,6 +250,7 @@
 				7A028A361CEF2CDD00C51F99 /* TorrentCell.swift in Sources */,
 				7A1599F91CEF5CEA006B36B0 /* DateFormatterSingleton.swift in Sources */,
 				7A028A2F1CEF28D400C51F99 /* rTorrentCall.swift in Sources */,
+				7AEEA43A1CF4E028005C370B /* DirTrackerController.swift in Sources */,
 				7A028A3B1CEF37AC00C51F99 /* HelperFunctions.swift in Sources */,
 				7A1599F51CEF588F006B36B0 /* RSSParser.swift in Sources */,
 				7A159A0C1CF2165C006B36B0 /* RSSFilterController.swift in Sources */,

@@ -198,6 +198,15 @@ class Manager: NSObject, NSCoding {
         return RTorrentCall.DMultiCall("main", list)
     }
     
+    func callToInitFilesForTorrent(torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.FilesName(""), RTorrentCall.FilesSize("")]
+        return RTorrentCall.FMultiCall(torrent.hashT, list)
+    }
+    
+    func callToInitTrackersForTorrent(torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.TrackerURL(""), RTorrentCall.TrackerSeeders(""), RTorrentCall.TrackerLeechers("")]
+        return RTorrentCall.TMultiCall(torrent.hashT, list)
+    }
     func updateItemsToDisplay() {
         if let feedToDisplay = feedToDisplay {
             itemsToDisplay = feedToDisplay.items.sort(<)
