@@ -51,7 +51,7 @@ class EditFeedsController: UITableViewController {
         }
         delete.backgroundColor = UIColor.redColor()
         let edit = UITableViewRowAction(style: .Default, title: "Edit") { action, index in
-            self.performSegueWithIdentifier("AddRSS", sender: feed)
+            self.performSegueWithIdentifier("AddRss", sender: feed)
         }
         edit.backgroundColor = UIColor.orangeColor()
         let enable = UITableViewRowAction(style: .Default, title: "Enable") { action, index in
@@ -64,7 +64,7 @@ class EditFeedsController: UITableViewController {
     // MARK: - Navigation
 
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        if segue.identifier == "AddRSS" {
+        if segue.identifier == "AddRss" {
             let navBar = segue.destinationViewController as! UINavigationController
             let addRss = navBar.topViewController as! AddRSSController
             addRss.delegate = self

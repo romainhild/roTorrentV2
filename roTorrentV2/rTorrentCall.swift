@@ -11,7 +11,10 @@ import Foundation
 enum RTorrentCall {
     
     case AddTorrent(String, String)
+    case AddTorrentRaw(String)
     case ListMethods
+    case MethodSignature(String)
+    case MethodHelp(String)
     case DlList
     case ViewList
     case BaseDirectory
@@ -57,8 +60,14 @@ enum RTorrentCall {
         switch self {
         case .AddTorrent:
             return "schedule"
+        case .AddTorrentRaw:
+            return "load_raw_start"
         case .ListMethods:
             return "system.listMethods"
+        case .MethodSignature:
+            return "system.methodSignature"
+        case .MethodHelp:
+            return "system.methodHelp"
         case DlList:
             return "download_list"
         case ViewList:
@@ -155,8 +164,17 @@ enum RTorrentCall {
             }
             p += "</string></value></param>"
             return p
+        case .AddTorrentRaw(let torrentData):
+            p += "<param><value><base64>\(torrentData)</base64></value></param>"
+            return p
         case .ListMethods, .DlList,.ViewList,.BaseDirectory:
             return nil
+        case .MethodSignature(let method):
+            p += "<param><value><string>\(method)</string></value></param>"
+            return p
+        case .MethodHelp(let method):
+            p += "<param><value><string>\(method)</string></value></param>"
+            return p
         case Execute(let array):
             for item in array {
                 p += "<param><value><string>\(item)</string></value></param>"

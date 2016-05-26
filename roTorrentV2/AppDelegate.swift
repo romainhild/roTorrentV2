@@ -43,10 +43,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func applicationWillTerminate(application: UIApplication) {
-        
         saveData()
-        
-        // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+    }
+    
+    func application(app: UIApplication, openURL url: NSURL, options: [String : AnyObject]) -> Bool {
+        let fileManager = NSFileManager.defaultManager()
+        let urlToUse: NSURL
+        if let ext = url.pathExtension where ext == "bittorrent" {
+            if let urlWithoutBittorrent = url.URLByDeletingPathExtension, newExt = urlWithoutBittorrent.pathExtension where newExt == "torrent" {
+                urlToUse = urlWithoutBittorrent
+            } else {
+                print("type of file not correct")
+                do {
+                    try fileManager.removeItemAtURL(url)
+                } catch {}
+                return false
+            }
+        } else {
+            urlToUse = url
+        }
+        if let path = urlToUse.path {
+            if let data = NSFileManager.defaultManager().contentsAtPath(path) {
+                let stringData = data.base64EncodedStringWithOptions(.Encoding64CharacterLineLength)
+                let tabBarController = window!.rootViewController as! TabBarManagerController
+                let manager = tabBarController.manager
+                let call = RTorrentCall.AddTorrentRaw(stringData)
+                manager.call(call) { response in }
+            }
+        }
+        do {
+            try fileManager.removeItemAtURL(url)
+        } catch {}
+        return true
     }
 
     func saveData() {

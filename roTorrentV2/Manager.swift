@@ -144,7 +144,12 @@ class Manager: NSObject, NSCoding {
                         return
                     }
                     if let data = data {
-//                        print(String(data: data, encoding: NSUTF8StringEncoding))
+//                        switch call {
+//                        case .MethodSignature, .MethodHelp, .AddTorrentRaw:
+//                            print(String(data: data, encoding: NSUTF8StringEncoding))
+//                        default:
+//                            break
+//                        }
                         let parser = XMLRPCParser(data: data)
                         let success = parser.parse()
                         if success {
