@@ -43,19 +43,10 @@ class DetailTorrentController: UITableViewController {
         leftLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.sizeLeft, countStyle: NSByteCountFormatterCountStyle.File)
         dateLabel.text = ShortFormatterSingleton.sharedInstance.stringFromDate(torrent.date)
         hashLabel.text = torrent.hashT
-        updateSeedersLeechersLabels()
         
-        messageLabel.text = ""
-        if let msg = torrent.message {
-            stateLabel.text = "Error"
-            messageLabel.text = msg
-        } else if torrent.isActive == 0 {
-            stateLabel.text = "Pause"
-        } else if torrent.state == 0 {
-            stateLabel.text = "Pause"
-        } else {
-            stateLabel.text = "Active"
-        }
+        updateSeedersLeechersLabels()
+        updateStateLabels()
+        
         dlLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.speedDL, countStyle: NSByteCountFormatterCountStyle.File)
         upLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.speedUP, countStyle: NSByteCountFormatterCountStyle.File)
         
@@ -85,12 +76,20 @@ class DetailTorrentController: UITableViewController {
         let actionSheet = UIAlertController(title: "Edit Torrent", message: torrent.name, preferredStyle: .ActionSheet)
         let pause = UIAlertAction(title: "Pause", style: .Default) { action in
             let call = RTorrentCall.Stop(self.torrent.hashT)
-            self.manager.call(call) { response in }
+            self.manager.call(call) { response in
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.refreshState()
+                }
+            }
         }
         actionSheet.addAction(pause)
         let start = UIAlertAction(title: "Start", style: .Default) { action in
             let call = RTorrentCall.Start(self.torrent.hashT)
-            self.manager.call(call) { response in }
+            self.manager.call(call) { response in
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.refreshState()
+                }
+            }
         }
         actionSheet.addAction(start)
         let erase = UIAlertAction(title: "Erase", style: .Destructive) { action in
@@ -112,11 +111,24 @@ class DetailTorrentController: UITableViewController {
         presentViewController(actionSheet, animated: true, completion: nil)
     }
     
-    func refresh(sender: AnyObject) {
+    func refreshState() {
         if let torrent = self.torrent {
-            let call = manager.callToInitList(torrent.hashT)
+            let call = RTorrentCall.State(torrent.hashT)
             manager.call(call) { response in
-                
+                switch response {
+                case .Success(let xmltype):
+                    torrent.setState(xmltype)
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.updateStateLabels()
+                    }
+                case .Failure(let error):
+                    let alert = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .Alert)
+                    let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                    alert.addAction(ok)
+                    dispatch_async(dispatch_get_main_queue()) {
+                        self.presentViewController(alert, animated: true, completion: nil)
+                    }
+                }
             }
         }
     }
@@ -131,6 +143,18 @@ class DetailTorrentController: UITableViewController {
             leechersLabel.text = "\(torrent.leechers)(\(allLeechers))"
         } else {
             leechersLabel.text = String(torrent.leechers)
+        }
+    }
+    
+    func updateStateLabels() {
+        messageLabel.text = ""
+        if let msg = torrent.message {
+            stateLabel.text = "Error"
+            messageLabel.text = msg
+        } else if torrent.state == 0 {
+            stateLabel.text = "Pause"
+        } else {
+            stateLabel.text = "Active"
         }
     }
 

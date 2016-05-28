@@ -89,15 +89,6 @@ class Manager: NSObject, NSCoding {
         
         super.init()
 
-//        if let url = NSURL(string: "https://iptorrents.com/torrents/rss?u=1494307;tp=dcf0b7a01b8a39fce5517b1227410943;bookmarks;download") {
-//            if let feed = RSSFeed(title: "test", link: url) {
-//                feeds.append(feed)
-//            } else {
-//                print("no feed")
-//            }
-//        } else {
-//            print("no url")
-//        }
         updateFeeds()
     }
     
@@ -144,12 +135,12 @@ class Manager: NSObject, NSCoding {
                         return
                     }
                     if let data = data {
-//                        switch call {
-//                        case .MethodSignature, .MethodHelp, .AddTorrentRaw:
-//                            print(String(data: data, encoding: NSUTF8StringEncoding))
-//                        default:
-//                            break
-//                        }
+                        switch call {
+                        case .MethodSignature, .MethodHelp, .AddTorrentRaw, .State:
+                            print(String(data: data, encoding: NSUTF8StringEncoding))
+                        default:
+                            break
+                        }
                         let parser = XMLRPCParser(data: data)
                         let success = parser.parse()
                         if success {
@@ -198,9 +189,9 @@ class Manager: NSObject, NSCoding {
         }
     }
     
-    func callToInitList() -> RTorrentCall {
+    func callToInitList(view: String = "main") -> RTorrentCall {
         let list = [RTorrentCall.Filename(""), RTorrentCall.Hash(""), RTorrentCall.Date(""), RTorrentCall.Ratio(""), RTorrentCall.Size(""), RTorrentCall.SizeCompleted(""), RTorrentCall.SizeLeft(""), RTorrentCall.SizeUP(""), RTorrentCall.Path(""), RTorrentCall.Directory(""), RTorrentCall.SpeedDL(""), RTorrentCall.SpeedUP(""), RTorrentCall.Leechers(""), RTorrentCall.Seeders(""), RTorrentCall.State(""), RTorrentCall.IsActive(""), RTorrentCall.Message(""), RTorrentCall.NumberOfFiles(""), RTorrentCall.NumberOfTrackers("")]
-        return RTorrentCall.DMultiCall("main", list)
+        return RTorrentCall.DMultiCall(view, list)
     }
     
     func callToInitFilesForTorrent(torrent: Torrent) -> RTorrentCall {
