@@ -140,8 +140,16 @@ extension RSSController: UISearchBarDelegate {
 }
 
 extension RSSController: ThroughFolderDelegate {
-    func controller(controller: ThroughFolderController, didAddItem item: RSSItem) {
+    func controllerDidCancel(controller: ThroughFolderController) {
+        
+    }
+    
+    func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forItem item: RSSItem) {
+        let call = RTorrentCall.AddTorrent(item.link.absoluteString, directory)
+        self.manager.call(call) { response in }
+        item.hasBeenAdded = true
         self.tableView.reloadData()
+
     }
 }
 

@@ -37,9 +37,15 @@
                                 <action selector="filter:" destination="JJC-Bz-tkC" id="oyg-S1-eUQ"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="WsA-o0-r9d">
+                            <connections>
+                                <action selector="addTorrent:" destination="JJC-Bz-tkC" id="Qol-QJ-2OZ"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <segue destination="Uzj-BC-j1v" kind="show" identifier="DetailTorrent" id="i4B-cy-Lwu"/>
+                        <segue destination="f8N-rV-OrS" kind="presentation" identifier="ThroughFolder" id="UUA-QZ-H8m"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cet-Uj-543" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -235,6 +241,9 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="doneButton" destination="N0K-zh-YNn" id="eYq-83-ze7"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pDi-66-aJa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -694,7 +703,7 @@
             </objects>
             <point key="canvasLocation" x="3872" y="305"/>
         </scene>
-        <!--Detail Torrent Controller-->
+        <!--Details-->
         <scene sceneID="Gnc-He-aZk">
             <objects>
                 <tableViewController id="Uzj-BC-j1v" customClass="DetailTorrentController" customModule="roTorrentV2" customModuleProvider="target" sceneMemberID="viewController">
@@ -1434,6 +1443,15 @@
                             <outlet property="delegate" destination="Uzj-BC-j1v" id="xKp-YN-hDY"/>
                         </connections>
                     </tableView>
+                    <toolbarItems/>
+                    <navigationItem key="navigationItem" title="Details" id="Khe-o6-rpj">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="jYf-RQ-48h">
+                            <connections>
+                                <action selector="edit:" destination="Uzj-BC-j1v" id="R2W-J5-t15"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <simulatedToolbarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="dateLabel" destination="mYZ-74-Stu" id="twe-9g-eNd"/>
                         <outlet property="directoryLabel" destination="iLK-S1-iSJ" id="n7Q-B9-VB5"/>
@@ -1565,6 +1583,7 @@
         <image name="SettingsIcon" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="UUA-QZ-H8m"/>
         <segue reference="q6Z-sb-AiK"/>
     </inferredMetricsTieBreakers>
 </document>

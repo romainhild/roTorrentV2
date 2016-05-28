@@ -73,6 +73,25 @@ class DownloadListController: UITableViewController {
         }
     }
     
+    @IBAction func addTorrent(sender: AnyObject) {
+        let alert = UIAlertController(title: "Add Torrent via URL", message: "And choose a directory", preferredStyle: .Alert)
+        alert.addTextFieldWithConfigurationHandler { textField in
+            textField.placeholder = "URL"
+        }
+        let baseDir = UIAlertAction(title: "Base Directory", style: .Default) { action in
+            let call = RTorrentCall.AddTorrent(alert.textFields![0].text!, "")
+            self.manager.call(call, completionHandler: self.responseToAddTorrent)
+        }
+        alert.addAction(baseDir)
+        let otherDir = UIAlertAction(title: "Other Directory...", style: .Default) { action in
+            self.performSegueWithIdentifier("ThroughFolder", sender: alert.textFields![0].text)
+        }
+        alert.addAction(otherDir)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        alert.addAction(cancel)
+        self.presentViewController(alert, animated: true, completion: nil)
+    }
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -152,9 +171,31 @@ class DownloadListController: UITableViewController {
             controller.manager = self.manager
             let torrent = sender as! Torrent
             controller.torrent = torrent
+        } else if segue.identifier == "ThroughFolder" {
+            let nav = segue.destinationViewController as! UINavigationController
+            let controller = nav.topViewController as! ThroughFolderController
+            controller.manager = self.manager
+            controller.delegate = self
+            controller.url = sender as? String
         }
     }
 
+    func responseToAddTorrent(response: Response<XMLRPCType,NSError>) {
+        switch response {
+        case .Success:
+            dispatch_async(dispatch_get_main_queue()) {
+                self.refresh(self)
+            }
+        case .Failure(let error):
+            let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+            let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .Alert)
+            alert.addAction(ok)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.refreshControl?.endRefreshing()
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+        }
+    }
 }
 
 extension DownloadListController: UISearchBarDelegate {
@@ -164,6 +205,17 @@ extension DownloadListController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(searchBar: UISearchBar) {
         self.searchBar.resignFirstResponder()
+    }
+}
+
+extension DownloadListController: ThroughFolderDelegate {
+    func controllerDidCancel(controller: ThroughFolderController) {
+        
+    }
+    
+    func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String) {
+        let call = RTorrentCall.AddTorrent(url, directory)
+        self.manager.call(call, completionHandler: responseToAddTorrent)
     }
 }
 
