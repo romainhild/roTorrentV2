@@ -34,7 +34,6 @@ class DetailTorrentController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.navigationItem.title = "Details"
         
         nameLabel.text = torrent.name
         ratioLabel.text = String(torrent.ratio)
@@ -51,9 +50,9 @@ class DetailTorrentController: UITableViewController {
             stateLabel.text = "Error"
             messageLabel.text = msg
         } else if torrent.isActive == 0 {
-            stateLabel.text = "Stopped"
+            stateLabel.text = "Pause"
         } else if torrent.state == 0 {
-            stateLabel.text = "Paused"
+            stateLabel.text = "Pause"
         } else {
             stateLabel.text = "Active"
         }
@@ -80,6 +79,46 @@ class DetailTorrentController: UITableViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    @IBAction func edit(sender: AnyObject) {
+        let actionSheet = UIAlertController(title: "Edit Torrent", message: torrent.name, preferredStyle: .ActionSheet)
+        let pause = UIAlertAction(title: "Pause", style: .Default) { action in
+            let call = RTorrentCall.Stop(self.torrent.hashT)
+            self.manager.call(call) { response in }
+        }
+        actionSheet.addAction(pause)
+        let start = UIAlertAction(title: "Start", style: .Default) { action in
+            let call = RTorrentCall.Start(self.torrent.hashT)
+            self.manager.call(call) { response in }
+        }
+        actionSheet.addAction(start)
+        let erase = UIAlertAction(title: "Erase", style: .Destructive) { action in
+            let alert = UIAlertController(title: "Really erase this torrent?", message: self.torrent.name, preferredStyle: .Alert)
+            let yes = UIAlertAction(title: "Yes", style: .Default) { action in
+                let call = RTorrentCall.Erase(self.torrent.hashT)
+                self.manager.call(call) { response in }
+            }
+            alert.addAction(yes)
+            let no = UIAlertAction(title: "No", style: .Cancel, handler: nil)
+            alert.addAction(no)
+            dispatch_async(dispatch_get_main_queue()) {
+                self.presentViewController(alert, animated: true, completion: nil)
+            }
+        }
+        actionSheet.addAction(erase)
+        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        actionSheet.addAction(cancel)
+        presentViewController(actionSheet, animated: true, completion: nil)
+    }
+    
+    func refresh(sender: AnyObject) {
+        if let torrent = self.torrent {
+            let call = manager.callToInitList(torrent.hashT)
+            manager.call(call) { response in
+                
+            }
+        }
     }
     
     func updateSeedersLeechersLabels() {
