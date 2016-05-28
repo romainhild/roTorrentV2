@@ -8,7 +8,7 @@
 
 import Foundation
 
-class RSSItem {
+class RSSItem: NSObject {
     var title: String
     var link: NSURL
     var pubDate: NSDate
@@ -21,6 +21,7 @@ class RSSItem {
         self.link = link
         self.pubDate = date
         self.desc = description
+        super.init()
     }
     
     func match(search: String) -> Bool {

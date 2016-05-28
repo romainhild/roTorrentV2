@@ -198,6 +198,11 @@
 					7A028A121CEF26D000C51F99 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = U34ZVBHBJ7;
+						SystemCapabilities = {
+							com.apple.WAC = {
+								enabled = 0;
+							};
+						};
 					};
 				};
 			};

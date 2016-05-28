@@ -12,11 +12,18 @@ class ThroughFolderController: UITableViewController {
     
     var delegate: ThroughFolderDelegate?
     var manager: Manager!
-    var item: RSSItem!
+    var item: RSSItem?
+    var url: String?
     var folders = [String]()
+    
+    @IBOutlet weak var doneButton: UIBarButtonItem!
+    
     var currentDir: String? {
         didSet {
             if let currentDir = currentDir {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.doneButton.enabled = true
+                }
                 let call = RTorrentCall.ListDirectories(currentDir)
                 manager.call(call) { response in
                     switch response {
@@ -48,6 +55,7 @@ class ThroughFolderController: UITableViewController {
         super.viewDidLoad()
 
         if currentDir == nil {
+            self.doneButton.enabled = false
             let call = RTorrentCall.BaseDirectory
             manager.call(call) { response in
                 switch response {
@@ -68,10 +76,11 @@ class ThroughFolderController: UITableViewController {
     @IBAction func done(sender: AnyObject) {
         let actionSheet = UIAlertController(title: "Do you want to choose this directory ?", message: currentDir, preferredStyle: .ActionSheet)
         let ok = UIAlertAction(title: "Yes", style: .Default) { action in
-            let call = RTorrentCall.AddTorrent(self.item.link.absoluteString, self.currentDir!)
-            self.manager.call(call) { response in }
-            self.item.hasBeenAdded = true
-            self.delegate?.controller(self, didAddItem: self.item)
+            if let item = self.item {
+                self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forItem: item)
+            } else if let url = self.url {
+                self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forURL: url)
+            }
             self.dismissViewControllerAnimated(true, completion: nil)
         }
         actionSheet.addAction(ok)
@@ -119,7 +128,12 @@ class ThroughFolderController: UITableViewController {
             let dir = folders[index!.row]
             let controller = segue.destinationViewController as! ThroughFolderController
             controller.manager = self.manager
-            controller.item = self.item
+            if let item = self.item {
+                controller.item = item
+            }
+            if let url = self.url {
+                controller.url = url
+            }
             controller.currentDir = dir
             controller.delegate = self.delegate
         }
@@ -127,6 +141,8 @@ class ThroughFolderController: UITableViewController {
 
 }
 
-protocol ThroughFolderDelegate {
-    func controller(controller: ThroughFolderController, didAddItem item: RSSItem)
+@objc protocol ThroughFolderDelegate {
+    func controllerDidCancel(controller: ThroughFolderController)
+    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forItem item: RSSItem)
+    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String)
 }
