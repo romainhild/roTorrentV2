@@ -241,9 +241,6 @@
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <connections>
-                        <outlet property="doneButton" destination="N0K-zh-YNn" id="eYq-83-ze7"/>
-                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pDi-66-aJa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1472,6 +1469,7 @@
                         <outlet property="upLabel" destination="IHY-EE-DoI" id="u5u-qO-1uU"/>
                         <outlet property="uploadLabel" destination="quu-ni-NQM" id="MpY-L7-YoI"/>
                         <segue destination="i7y-K4-482" kind="show" identifier="DirTracker" id="3T6-Dj-Bqv"/>
+                        <segue destination="f8N-rV-OrS" kind="presentation" identifier="ChooseDir" id="vK1-mk-fCk"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RmC-3h-Xlr" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1583,7 +1581,7 @@
         <image name="SettingsIcon" width="25" height="25"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="UUA-QZ-H8m"/>
+        <segue reference="vK1-mk-fCk"/>
         <segue reference="q6Z-sb-AiK"/>
     </inferredMetricsTieBreakers>
 </document>

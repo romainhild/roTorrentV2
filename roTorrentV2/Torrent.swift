@@ -329,6 +329,52 @@ class Torrent : NSObject
         }
     }
     
+    func refreshState(xmltype: XMLRPCType) {
+        switch xmltype {
+        case .XMLRPCArray(let xmlarray):
+            switch xmlarray[0] {
+            case .XMLRPCArray(let xmlState):
+                self.setState(xmlState[0])
+            default:
+                break
+            }
+            switch xmlarray[1] {
+            case .XMLRPCArray(let xmlState):
+                self.setIsActive(xmlState[0])
+            default:
+                break
+            }
+            switch xmlarray[2] {
+            case .XMLRPCArray(let xmlState):
+                self.setMessage(xmlState[0])
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
+    
+    func refreshDirAndPath(xmltype: XMLRPCType) {
+        switch xmltype {
+        case .XMLRPCArray(let xmlarray):
+            switch xmlarray[0] {
+            case .XMLRPCArray(let xmlDir):
+                self.setDirectory(xmlDir[0])
+            default:
+                break
+            }
+            switch xmlarray[1] {
+            case .XMLRPCArray(let xmlPath):
+                self.setPath(xmlPath[0])
+            default:
+                break
+            }
+        default:
+            break
+        }
+    }
+    
     func match(search: String) -> Bool {
         if !search.isEmpty {
             var searchAsRegex = search.stringByReplacingOccurrencesOfString(" ", withString: ".")

@@ -14,16 +14,13 @@ class ThroughFolderController: UITableViewController {
     var manager: Manager!
     var item: RSSItem?
     var url: String?
+    var torrent: Torrent?
+
     var folders = [String]()
-    
-    @IBOutlet weak var doneButton: UIBarButtonItem!
-    
+        
     var currentDir: String? {
         didSet {
             if let currentDir = currentDir {
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.doneButton.enabled = true
-                }
                 let call = RTorrentCall.ListDirectories(currentDir)
                 manager.call(call) { response in
                     switch response {
@@ -55,7 +52,6 @@ class ThroughFolderController: UITableViewController {
         super.viewDidLoad()
 
         if currentDir == nil {
-            self.doneButton.enabled = false
             let call = RTorrentCall.BaseDirectory
             manager.call(call) { response in
                 switch response {
@@ -74,23 +70,29 @@ class ThroughFolderController: UITableViewController {
     }
     
     @IBAction func done(sender: AnyObject) {
-        let actionSheet = UIAlertController(title: "Do you want to choose this directory ?", message: currentDir, preferredStyle: .ActionSheet)
-        let ok = UIAlertAction(title: "Yes", style: .Default) { action in
-            if let item = self.item {
-                self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forItem: item)
-            } else if let url = self.url {
-                self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forURL: url)
+        if let currentDir = self.currentDir {
+            let actionSheet = UIAlertController(title: "Do you want to choose this directory ?", message: currentDir, preferredStyle: .ActionSheet)
+            let ok = UIAlertAction(title: "Yes", style: .Default) { action in
+                if let item = self.item {
+                    self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forItem: item)
+                } else if let url = self.url {
+                    self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forURL: url)
+                } else if let torrent = self.torrent {
+                    self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forTorrent: torrent)
+                }
+                self.dismissViewControllerAnimated(true, completion: nil)
             }
+            actionSheet.addAction(ok)
+            let no = UIAlertAction(title: "No", style: .Default, handler: nil)
+            actionSheet.addAction(no)
+            let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { action in
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+            actionSheet.addAction(cancel)
+            presentViewController(actionSheet, animated: true, completion: nil)
+        } else {
             self.dismissViewControllerAnimated(true, completion: nil)
         }
-        actionSheet.addAction(ok)
-        let no = UIAlertAction(title: "No", style: .Default, handler: nil)
-        actionSheet.addAction(no)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-            self.dismissViewControllerAnimated(true, completion: nil)
-        }
-        actionSheet.addAction(cancel)
-        presentViewController(actionSheet, animated: true, completion: nil)
     }
 
     override func didReceiveMemoryWarning() {
@@ -134,6 +136,9 @@ class ThroughFolderController: UITableViewController {
             if let url = self.url {
                 controller.url = url
             }
+            if let torrent = self.torrent {
+                controller.torrent = torrent
+            }
             controller.currentDir = dir
             controller.delegate = self.delegate
         }
@@ -145,4 +150,5 @@ class ThroughFolderController: UITableViewController {
     func controllerDidCancel(controller: ThroughFolderController)
     optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forItem item: RSSItem)
     optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String)
+    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forTorrent torrent: Torrent)
 }

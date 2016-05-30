@@ -136,7 +136,7 @@ class Manager: NSObject, NSCoding {
                     }
                     if let data = data {
                         switch call {
-                        case .MethodSignature, .MethodHelp, .AddTorrentRaw, .State:
+                        case .SystemMultiCall, .SetDirectory, .MoveFile, .Execute:
                             print(String(data: data, encoding: NSUTF8StringEncoding))
                         default:
                             break
@@ -203,6 +203,27 @@ class Manager: NSObject, NSCoding {
         let list = [RTorrentCall.TrackerURL(""), RTorrentCall.TrackerSeeders(""), RTorrentCall.TrackerLeechers("")]
         return RTorrentCall.TMultiCall(torrent.hashT, list)
     }
+    
+    func callToRefreshState(torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.State(torrent.hashT), RTorrentCall.IsActive(torrent.hashT), RTorrentCall.Message(torrent.hashT)]
+        return RTorrentCall.SystemMultiCall(list)
+    }
+    
+    func callToMoveTorrent(torrent: Torrent, inNewDirectory directory: String) -> RTorrentCall {
+        let list = [RTorrentCall.Stop(torrent.hashT), RTorrentCall.SetDirectory(torrent.hashT, directory), RTorrentCall.MoveFile(torrent.path, directory), RTorrentCall.Start(torrent.hashT)]
+        return RTorrentCall.SystemMultiCall(list)
+    }
+    
+    func callTorRefreshDirAndPath(torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.Directory(torrent.hashT), RTorrentCall.Path(torrent.hashT)]
+        return RTorrentCall.SystemMultiCall(list)
+    }
+    
+    func callToEraseAndDelete(torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.DeleteFiles(torrent.path), RTorrentCall.Erase(torrent.hashT)]
+        return RTorrentCall.SystemMultiCall(list)
+    }
+    
     func updateItemsToDisplay() {
         if let feedToDisplay = feedToDisplay {
             itemsToDisplay = feedToDisplay.items.sort(<)
