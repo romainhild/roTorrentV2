@@ -20,6 +20,8 @@ enum RTorrentCall {
     case BaseDirectory
     case Execute([String])
     case ListDirectories(String)
+    case MoveFile(String, String)
+    case DeleteFiles(String)
     case LoadURL(String)
     case Filename(String)
     case Hash(String)
@@ -46,6 +48,7 @@ enum RTorrentCall {
     case Resume(String)
     case Start(String)
     case Stop(String)
+    case SetDirectory(String, String)
     case Erase(String)
     case DMultiCall(String,[RTorrentCall])
     case FilesName(String)
@@ -55,6 +58,7 @@ enum RTorrentCall {
     case TrackerSeeders(String)
     case TrackerLeechers(String)
     case TMultiCall(String,[RTorrentCall])
+    case SystemMultiCall([RTorrentCall])
     
     var methodName: String {
         switch self {
@@ -74,9 +78,7 @@ enum RTorrentCall {
             return "view_list"
         case BaseDirectory:
             return "get_directory"
-        case Execute:
-            return "execute_capture"
-        case .ListDirectories:
+        case Execute, .ListDirectories, .MoveFile, .DeleteFiles:
             return "execute_capture"
         case LoadURL:
             return "load_start"
@@ -130,6 +132,8 @@ enum RTorrentCall {
             return "d.start"
         case .Stop:
             return "d.stop"
+        case .SetDirectory:
+            return "d.set_directory"
         case .Erase:
             return "d.erase"
         case DMultiCall:
@@ -148,140 +152,169 @@ enum RTorrentCall {
             return "t.get_scrape_incomplete"
         case TMultiCall:
             return "t.multicall"
+        case .SystemMultiCall:
+            return "system.multicall"
         }
     }
     
-    var param: String? {
-        var p = ""
+    var paramList: [String] {
+        var p = [String]()
         switch self {
         case AddTorrent(let torrent, let directory):
-            p += "<param><value><string>add_torrent</string></value></param>"
-            p += "<param><value><string>0</string></value></param>"
-            p += "<param><value><string>0</string></value></param>"
-            p += "<param><value><string>load_start=\(torrent)"
+            p.append("<value><string>add_torrent</string></value>")
+            p.append("<value><string>0</string></value>")
+            p.append("<value><string>0</string></value>")
+            var pp = "<value><string>load_start=\(torrent)"
             if !directory.isEmpty {
-                p += ",d.set_directory=\(directory)"
+                pp += ",d.set_directory=\(directory)"
             }
-            p += "</string></value></param>"
-            return p
+            pp += "</string></value>"
+            p.append(pp)
         case .AddTorrentRaw(let torrentData):
-            p += "<param><value><base64>\(torrentData)</base64></value></param>"
-            return p
+            p.append("<value><base64>\(torrentData)</base64></value>")
         case .ListMethods, .DlList,.ViewList,.BaseDirectory:
-            return nil
+            break
         case .MethodSignature(let method):
-            p += "<param><value><string>\(method)</string></value></param>"
-            return p
+            p.append("<value><string>\(method)</string></value>")
         case .MethodHelp(let method):
-            p += "<param><value><string>\(method)</string></value></param>"
-            return p
+            p.append("<value><string>\(method)</string></value>")
         case Execute(let array):
             for item in array {
-                p += "<param><value><string>\(item)</string></value></param>"
+                p.append("<value><string>\(item)</string></value>")
             }
-            return p
         case .ListDirectories(let dir):
-            p += "<param><value><string>find</string></value></param>"
-            p += "<param><value><string>\(dir)</string></value></param>"
-            p += "<param><value><string>-maxdepth</string></value></param>"
-            p += "<param><value><string>1</string></value></param>"
-            p += "<param><value><string>-mindepth</string></value></param>"
-            p += "<param><value><string>1</string></value></param>"
-            return p
+            p.append("<value><string>find</string></value>")
+            p.append("<value><string>\(dir)</string></value>")
+            p.append("<value><string>-maxdepth</string></value>")
+            p.append("<value><string>1</string></value>")
+            p.append("<value><string>-mindepth</string></value>")
+            p.append("<value><string>1</string></value>")
+        case .MoveFile(let path, let newDir):
+            p.append("<value><string>mv</string></value>")
+            p.append("<value><string>\(path)</string></value>")
+            p.append("<value><string>\(newDir)</string></value>")
+        case .DeleteFiles(let path):
+            p.append("<value><string>rm</string></value>")
+            p.append("<value><string>-r</string></value>")
+            p.append("<value><string>\(path)</string></value>")
         case LoadURL(let url):
-            return "<param><value><string>\(url)</string></value></param>"
+            p.append("<value><string>\(url)</string></value>")
         case Filename(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Hash(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Date(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Size(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case SizeCompleted(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case SizeLeft(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case SizeUP(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Path(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Directory(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case SpeedDL(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case SpeedUP(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Leechers(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Seeders(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Ratio(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case State(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case Message(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .IsActive(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .IsOpen(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .Views(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .NumberOfFiles(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .NumberOfTrackers(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .Pause(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .Resume(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .Start(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case .Stop(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
+        case .SetDirectory(let hash, let directory):
+            p.append("<value><string>\(hash)</string></value>")
+            p.append("<value><string>\(directory)</string></value>")
         case .Erase(let hash):
-            return "<param><value><string>\(hash)</string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
         case DMultiCall(let view, let array):
-            p += "<param><value><string>\(view)</string></value></param>"
+            p.append("<value><string>\(view)</string></value>")
             for item in array {
-                p += "<param><value><string>\(item.methodName)=</string></value></param>"
+                p.append("<value><string>\(item.methodName)=</string></value>")
             }
-            return p
         case .FilesName(let hashF):
-            return "<param><value><string>\(hashF)</string></value></param>"
+            p.append("<value><string>\(hashF)</string></value>")
         case .FilesSize(let hashF):
-            return "<param><value><string>\(hashF)</string></value></param>"
+            p.append("<value><string>\(hashF)</string></value>")
         case FMultiCall(let hash, let array):
-            p += "<param><value><string>\(hash)</string></value></param><param><value><string></string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
+            p.append("<value><string></string></value>")
             for item in array {
-                p += "<param><value><string>\(item.methodName)=</string></value></param>"
+                p.append("<value><string>\(item.methodName)=</string></value>")
             }
-            return p
         case .TrackerURL(let hashT):
-            return "<param><value><string>\(hashT)</string></value></param>"
+            p.append("<value><string>\(hashT)</string></value>")
         case .TrackerSeeders(let hashT):
-            return "<param><value><string>\(hashT)</string></value></param>"
+            p.append("<value><string>\(hashT)</string></value>")
         case .TrackerLeechers(let hashT):
-            return "<param><value><string>\(hashT)</string></value></param>"
+            p.append("<value><string>\(hashT)</string></value>")
         case .TMultiCall(let hash, let array):
-            p += "<param><value><string>\(hash)</string></value></param>"
-            p += "<param><value><string></string></value></param>"
+            p.append("<value><string>\(hash)</string></value>")
+            p.append("<value><string></string></value>")
             for item in array {
-                p += "<param><value><string>\(item.methodName)=</string></value></param>"
+                p.append("<value><string>\(item.methodName)=</string></value>")
             }
-            return p
+        case .SystemMultiCall:
+            break
         }
+        return p
+    }
+    
+    var param: String {
+        var p = ""
+        switch self {
+        case .SystemMultiCall(let array):
+            p += "<param><value><array><data>"
+            for method in array {
+                p += "<value><struct>"
+                p += "<member><name>methodName</name><value><string>\(method.methodName)</string></value></member>"
+                p += "<member><name>params</name><value><array><data>"
+                for param in method.paramList {
+                    p += param
+                }
+                p += "</data></array></value></member>"
+                p += "</struct></value>"
+            }
+            p += "</data></array></value></param>"
+        default:
+            for param in self.paramList {
+                p += "<param>\(param)</param>"
+            }
+        }
+        return p
     }
     
     var body: String {
         var b = "<?xml version=\"1.0\"?><methodCall><methodName>\(self.methodName)</methodName><params>"
-        if let param = self.param {
-            b += param
-        }
+        b += self.param
         b += "</params></methodCall>"
-        //        print(b)
-        //        print("\n")
         return b
     }
     
