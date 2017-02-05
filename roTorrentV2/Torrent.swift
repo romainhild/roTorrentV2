@@ -12,7 +12,7 @@ class Torrent : NSObject
 {
     var name: String = ""
     var hashT: String = ""
-    var date: NSDate = NSDate()
+    var date: Date = Date()
     var ratio: Double = 0
     var size: Int64 = 0
     var sizeCompleted: Int64 = 1
@@ -63,12 +63,12 @@ class Torrent : NSObject
         setNumberOfTrackers(array[18])
     }
     
-    func initFiles(xmlArray: XMLRPCType) {
+    func initFiles(_ xmlArray: XMLRPCType) {
         switch xmlArray {
-        case .XMLRPCArray(let array):
+        case .xmlrpcArray(let array):
             for xmlItem in array {
                 switch xmlItem {
-                case .XMLRPCArray(let arrayFile):
+                case .xmlrpcArray(let arrayFile):
                     setFile(arrayFile)
                 default:
                     break
@@ -79,12 +79,12 @@ class Torrent : NSObject
         }
     }
     
-    func initTrackers(xmlArray: XMLRPCType) {
+    func initTrackers(_ xmlArray: XMLRPCType) {
         switch xmlArray {
-        case .XMLRPCArray(let array):
+        case .xmlrpcArray(let array):
             for xmlItem in array {
                 switch xmlItem {
-                case .XMLRPCArray(let arrayTracker):
+                case .xmlrpcArray(let arrayTracker):
                     setTracker(arrayTracker)
                 default:
                     break
@@ -95,190 +95,190 @@ class Torrent : NSObject
         }
     }
     
-    func setName(xmlName: XMLRPCType) {
+    func setName(_ xmlName: XMLRPCType) {
         switch xmlName {
-        case .XMLRPCString(let newName):
+        case .xmlrpcString(let newName):
             self.name = newName
         default:
             break
         }
     }
     
-    func setHash(xmlHash: XMLRPCType) {
+    func setHash(_ xmlHash: XMLRPCType) {
         switch xmlHash {
-        case .XMLRPCString(let newHash):
+        case .xmlrpcString(let newHash):
             self.hashT = newHash
         default:
             break
         }
     }
     
-    func setDate(xmlCreationDate: XMLRPCType) {
+    func setDate(_ xmlCreationDate: XMLRPCType) {
         switch xmlCreationDate {
-        case .XMLRPCDate(let newDate):
+        case .xmlrpcDate(let newDate):
             self.date = newDate
-        case .XMLRPCInt(let dateAsInt):
-            self.date = NSDate(timeIntervalSince1970: NSTimeInterval(dateAsInt))
+        case .xmlrpcInt(let dateAsInt):
+            self.date = Date(timeIntervalSince1970: TimeInterval(dateAsInt))
         default:
             break
         }
     }
     
-    func setSize(xmlSize: XMLRPCType) {
+    func setSize(_ xmlSize: XMLRPCType) {
         switch xmlSize {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.size = Int64(newSize)
         default:
             break
         }
     }
     
-    func setSizeCompleted(xmlSize: XMLRPCType) {
+    func setSizeCompleted(_ xmlSize: XMLRPCType) {
         switch xmlSize {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.sizeCompleted = Int64(newSize)
         default:
             break
         }
     }
     
-    func setSizeLeft(xmlSize: XMLRPCType) {
+    func setSizeLeft(_ xmlSize: XMLRPCType) {
         switch xmlSize {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.sizeLeft = Int64(newSize)
         default:
             break
         }
     }
     
-    func setSizeUp(xmlSize: XMLRPCType) {
+    func setSizeUp(_ xmlSize: XMLRPCType) {
         switch xmlSize {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.sizeUP = Int64(newSize)
         default:
             break
         }
     }
     
-    func setPath(xmlPath: XMLRPCType) {
+    func setPath(_ xmlPath: XMLRPCType) {
         switch xmlPath {
-        case .XMLRPCString(let newPath):
+        case .xmlrpcString(let newPath):
             self.path = newPath
         default:
             break
         }
     }
     
-    func setDirectory(xmlDirectory: XMLRPCType) {
+    func setDirectory(_ xmlDirectory: XMLRPCType) {
         switch xmlDirectory {
-        case .XMLRPCString(var newDirectory):
+        case .xmlrpcString(var newDirectory):
             let s = NSString(string: newDirectory)
-            let r = newDirectory.rangeOfString(s.lastPathComponent)
-            newDirectory.removeRange(r!)
+            let r = newDirectory.range(of: s.lastPathComponent)
+            newDirectory.removeSubrange(r!)
             self.directory = newDirectory
         default:
             break
         }
     }
     
-    func setSpeedDL(xmlSpeed: XMLRPCType) {
+    func setSpeedDL(_ xmlSpeed: XMLRPCType) {
         switch xmlSpeed {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.speedDL = Int64(newSize)
         default:
             break
         }
     }
     
-    func setSpeedUP(xmlSpeed: XMLRPCType) {
+    func setSpeedUP(_ xmlSpeed: XMLRPCType) {
         switch xmlSpeed {
-        case .XMLRPCInt(let newSize):
+        case .xmlrpcInt(let newSize):
             self.speedUP = Int64(newSize)
         default:
             break
         }
     }
     
-    func setLeechers(xmlLeechers: XMLRPCType) {
+    func setLeechers(_ xmlLeechers: XMLRPCType) {
         switch xmlLeechers {
-        case .XMLRPCInt(let newLeechers):
+        case .xmlrpcInt(let newLeechers):
             self.leechers = newLeechers
         default:
             break
         }
     }
     
-    func setSeeders(xmlSeeders: XMLRPCType) {
+    func setSeeders(_ xmlSeeders: XMLRPCType) {
         switch xmlSeeders {
-        case .XMLRPCInt(let newSeeders):
+        case .xmlrpcInt(let newSeeders):
             self.seeders = newSeeders
         default:
             break
         }
     }
     
-    func setRatio(xmlRatio: XMLRPCType) {
+    func setRatio(_ xmlRatio: XMLRPCType) {
         switch xmlRatio {
-        case .XMLRPCDouble(let newRatio):
+        case .xmlrpcDouble(let newRatio):
             self.ratio = newRatio
-        case .XMLRPCInt(let ratioAsInt):
+        case .xmlrpcInt(let ratioAsInt):
             self.ratio = Double(ratioAsInt)/1000
         default:
             break
         }
     }
     
-    func setState(xmlState: XMLRPCType) {
+    func setState(_ xmlState: XMLRPCType) {
         switch xmlState {
-        case .XMLRPCInt(let newState):
+        case .xmlrpcInt(let newState):
             self.state = newState
         default:
             break
         }
     }
     
-    func setIsActive(xmlIsActive: XMLRPCType) {
+    func setIsActive(_ xmlIsActive: XMLRPCType) {
         switch xmlIsActive {
-        case .XMLRPCInt(let newActivity):
+        case .xmlrpcInt(let newActivity):
             self.isActive = newActivity
         default:
             break
         }
     }
     
-    func setMessage(xmlMessage: XMLRPCType) {
+    func setMessage(_ xmlMessage: XMLRPCType) {
         switch xmlMessage {
-        case .XMLRPCString(let newMessage):
+        case .xmlrpcString(let newMessage):
             self.message = newMessage
-        case .XMLRPCNil:
+        case .xmlrpcNil:
             self.message = nil
         default:
             break
         }
     }
     
-    func setNumberOfFiles(xmlNbFiles: XMLRPCType) {
+    func setNumberOfFiles(_ xmlNbFiles: XMLRPCType) {
         switch xmlNbFiles {
-        case .XMLRPCInt(let newNbFiles):
+        case .xmlrpcInt(let newNbFiles):
             self.numberOfFiles = newNbFiles
         default:
             break
         }
     }
     
-    func setNumberOfTrackers(xmlNbTrackers: XMLRPCType) {
+    func setNumberOfTrackers(_ xmlNbTrackers: XMLRPCType) {
         switch xmlNbTrackers {
-        case .XMLRPCInt(let newNbTrackers):
+        case .xmlrpcInt(let newNbTrackers):
             self.numberOfTrackers = newNbTrackers
         default:
             break
         }
     }
     
-    func setFile(xmlFile: [XMLRPCType]) {
+    func setFile(_ xmlFile: [XMLRPCType]) {
         let xmlFileName = xmlFile[0]
         switch xmlFileName {
-        case .XMLRPCString(let filename):
+        case .xmlrpcString(let filename):
             listOfFiles.append(filename)
         default:
             break
@@ -286,17 +286,17 @@ class Torrent : NSObject
         
         let xmlSize = xmlFile[1]
         switch xmlSize {
-        case .XMLRPCInt(let size):
+        case .xmlrpcInt(let size):
             listOfFilesSize.append(Int64(size))
         default:
             break
         }
     }
     
-    func setTracker(xmlTracker: [XMLRPCType]) {
+    func setTracker(_ xmlTracker: [XMLRPCType]) {
         let xmlURL = xmlTracker[0]
         switch xmlURL {
-        case .XMLRPCString(let url):
+        case .xmlrpcString(let url):
             listOfTrackers.append(url)
         default:
             break
@@ -304,7 +304,7 @@ class Torrent : NSObject
         
         let xmlSeeders = xmlTracker[1]
         switch xmlSeeders {
-        case .XMLRPCInt(let seed):
+        case .xmlrpcInt(let seed):
             listOfTrackersSeeders.append(seed)
             if var _ = allSeeders {
                 self.allSeeders! += seed
@@ -317,7 +317,7 @@ class Torrent : NSObject
         
         let xmlLeechers = xmlTracker[2]
         switch xmlLeechers {
-        case .XMLRPCInt(let leech):
+        case .xmlrpcInt(let leech):
             listOfTrackersLeechers.append(leech)
             if var _ = allLeechers {
                 self.allLeechers! += leech
@@ -329,23 +329,23 @@ class Torrent : NSObject
         }
     }
     
-    func refreshState(xmltype: XMLRPCType) {
+    func refreshState(_ xmltype: XMLRPCType) {
         switch xmltype {
-        case .XMLRPCArray(let xmlarray):
+        case .xmlrpcArray(let xmlarray):
             switch xmlarray[0] {
-            case .XMLRPCArray(let xmlState):
+            case .xmlrpcArray(let xmlState):
                 self.setState(xmlState[0])
             default:
                 break
             }
             switch xmlarray[1] {
-            case .XMLRPCArray(let xmlState):
+            case .xmlrpcArray(let xmlState):
                 self.setIsActive(xmlState[0])
             default:
                 break
             }
             switch xmlarray[2] {
-            case .XMLRPCArray(let xmlState):
+            case .xmlrpcArray(let xmlState):
                 self.setMessage(xmlState[0])
             default:
                 break
@@ -355,17 +355,17 @@ class Torrent : NSObject
         }
     }
     
-    func refreshDirAndPath(xmltype: XMLRPCType) {
+    func refreshDirAndPath(_ xmltype: XMLRPCType) {
         switch xmltype {
-        case .XMLRPCArray(let xmlarray):
+        case .xmlrpcArray(let xmlarray):
             switch xmlarray[0] {
-            case .XMLRPCArray(let xmlDir):
+            case .xmlrpcArray(let xmlDir):
                 self.setDirectory(xmlDir[0])
             default:
                 break
             }
             switch xmlarray[1] {
-            case .XMLRPCArray(let xmlPath):
+            case .xmlrpcArray(let xmlPath):
                 self.setPath(xmlPath[0])
             default:
                 break
@@ -375,38 +375,38 @@ class Torrent : NSObject
         }
     }
     
-    func match(search: String) -> Bool {
+    func match(_ search: String) -> Bool {
         if !search.isEmpty {
-            var searchAsRegex = search.stringByReplacingOccurrencesOfString(" ", withString: ".")
-            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("_", withString: ".")
-            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("-", withString: ".")
-            let b = name.rangeOfString(searchAsRegex, options: [.RegularExpressionSearch, .CaseInsensitiveSearch])
+            var searchAsRegex = search.replacingOccurrences(of: " ", with: ".")
+            searchAsRegex = searchAsRegex.replacingOccurrences(of: "_", with: ".")
+            searchAsRegex = searchAsRegex.replacingOccurrences(of: "-", with: ".")
+            let b = name.range(of: searchAsRegex, options: [.regularExpression, .caseInsensitive])
             return (b != nil)
         } else {
             return true
         }
     }
 
-    func isFilterBy(filter: FilterBy = .All) -> Bool {
+    func isFilterBy(_ filter: FilterBy = .all) -> Bool {
         let filtered: Bool
         switch filter {
-        case .All:
+        case .all:
             filtered = true
-        case .Sending:
+        case .sending:
             filtered = speedUP > 0
-        case .Receiving:
+        case .receiving:
             filtered = speedDL > 0
-        case .Seeding:
+        case .seeding:
             filtered = (sizeLeft == 0)
-        case .Leeching:
+        case .leeching:
             filtered = (sizeLeft != 0)
-        case .Error:
+        case .error:
             filtered = (message != nil)
-        case .Pause:
+        case .pause:
             filtered = (isActive == 0)
-        case .Stop:
+        case .stop:
             filtered = (state == 0)
-        case .Active:
+        case .active:
             filtered = (isActive == 1) && (state == 1)
 //        case .Directory(let dir):
 //            filtered = (directory == dir)
@@ -416,26 +416,26 @@ class Torrent : NSObject
         return filtered
     }
     
-    func isOrderedBefore(second: Torrent, by sort: SortingBy, inOrder order: SortingOrder) -> Bool {
+    func isOrderedBefore(_ second: Torrent, by sort: SortingBy, inOrder order: SortingOrder) -> Bool {
         let b: Bool
         switch sort {
-        case .Date:
+        case .date:
             switch date.compare(second.date) {
-            case .OrderedAscending:
+            case .orderedAscending:
                 b = true
-            case .OrderedDescending, .OrderedSame:
+            case .orderedDescending, .orderedSame:
                 b = false
             }
-        case .Name:
+        case .name:
             switch name.compare(second.name) {
-            case .OrderedAscending:
+            case .orderedAscending:
                 b = true
-            case .OrderedDescending, .OrderedSame:
+            case .orderedDescending, .orderedSame:
                 b = false
             }
-        case .Send:
+        case .send:
             b = sizeUP < second.sizeUP
-        case .Size:
+        case .size:
             b = size < second.size
             //        case .Seeders:
             //            b = true
@@ -443,24 +443,24 @@ class Torrent : NSObject
             //            b = true
         }
         switch order {
-        case .Ascending:
+        case .ascending:
             return b
-        case .Descending:
+        case .descending:
             return !b
         }
     }
 }
 
 class Torrents {
-    private var torrents = [Torrent]()
+    fileprivate var torrents = [Torrent]()
     
-    func initWithXmlArray(xmlArray: XMLRPCType) {
+    func initWithXmlArray(_ xmlArray: XMLRPCType) {
         torrents.removeAll()
         switch xmlArray {
-        case .XMLRPCArray(let torrentsArray):
+        case .xmlrpcArray(let torrentsArray):
             for xmlTorrentArray in torrentsArray {
                 switch xmlTorrentArray {
-                case .XMLRPCArray(let torrentArray):
+                case .xmlrpcArray(let torrentArray):
                     let torrent = Torrent(array: torrentArray)
                     torrents.append(torrent)
                 default:
@@ -473,10 +473,10 @@ class Torrents {
     }
 }
 
-extension Torrents: SequenceType {
-    func generate() -> AnyGenerator<Torrent> {
+extension Torrents: Sequence {
+    func makeIterator() -> AnyIterator<Torrent> {
         var nextIndex = 0
-        return AnyGenerator<Torrent> {
+        return AnyIterator<Torrent> {
             if nextIndex < self.torrents.count {
                 nextIndex += 1
                 return self.torrents[nextIndex-1]
@@ -487,7 +487,16 @@ extension Torrents: SequenceType {
     }
 }
 
-extension Torrents: CollectionType {
+extension Torrents: Collection {
+    /// Returns the position immediately after the given index.
+    ///
+    /// - Parameter i: A valid index of the collection. `i` must be less than
+    ///   `endIndex`.
+    /// - Returns: The index value immediately after `i`.
+    public func index(after i: Int) -> Int {
+        return i+1
+    }
+
     var startIndex: Int {
         return 0
     }
