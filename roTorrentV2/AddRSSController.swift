@@ -20,13 +20,13 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        doneButton.enabled = false
+        doneButton.isEnabled = false
         titleField.becomeFirstResponder()
         titleField.delegate = self
         linkField.delegate = self
         
         if let feed = feedToEdit {
-            doneButton.enabled = true
+            doneButton.isEnabled = true
             titleField.text = feed.title
             linkField.text = feed.link.absoluteString
         }
@@ -37,53 +37,53 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
         // Dispose of any resources that can be recreated.
     }
 
-    @IBAction func done(sender: AnyObject) {
-        if let url = NSURL(string: linkField.text!) {
+    @IBAction func done(_ sender: AnyObject) {
+        if let url = URL(string: linkField.text!) {
             if let feed = feedToEdit {
                 feed.title = titleField.text!
                 feed.link = url
                 delegate?.editFeed(feed, sender: self)
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
             if let feed = RSSFeed(title: titleField.text!, link: url) {
                 delegate?.addFeed(feed, sender: self)
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             } else {
-                let alert = UIAlertController(title: "Oops", message: "It seems there was a problem\nEither the network is down, or the URL is not valid\nPlease try again.", preferredStyle: .Alert)
-                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                let alert = UIAlertController(title: "Oops", message: "It seems there was a problem\nEither the network is down, or the URL is not valid\nPlease try again.", preferredStyle: .alert)
+                let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
                 alert.addAction(ok)
-                presentViewController(alert, animated: true, completion: nil)
+                present(alert, animated: true, completion: nil)
             }
         } else {
-            let alert = UIAlertController(title: "Oops", message: "It seems there was a problem\nThe URL is not valid\nPlease try again.", preferredStyle: .Alert)
-            let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+            let alert = UIAlertController(title: "Oops", message: "It seems there was a problem\nThe URL is not valid\nPlease try again.", preferredStyle: .alert)
+            let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
             alert.addAction(ok)
-            presentViewController(alert, animated: true, completion: nil)
+            present(alert, animated: true, completion: nil)
         }
     }
 
-    @IBAction func cancel(sender: AnyObject) {
-        dismissViewControllerAnimated(true, completion: nil)
+    @IBAction func cancel(_ sender: AnyObject) {
+        dismiss(animated: true, completion: nil)
     }
     
-    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        if (textField.text! as NSString).stringByReplacingCharactersInRange(range, withString: string).isEmpty {
-            doneButton.enabled = false
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        if (textField.text! as NSString).replacingCharacters(in: range, with: string).isEmpty {
+            doneButton.isEnabled = false
         } else {
             if textField == titleField {
                 if !linkField.text!.isEmpty {
-                    doneButton.enabled = true
+                    doneButton.isEnabled = true
                 }
             } else {
                 if !titleField.text!.isEmpty {
-                    doneButton.enabled = true
+                    doneButton.isEnabled = true
                 }
             }
         }
         return true
     }
     
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == titleField {
             linkField.becomeFirstResponder()
         } else {
@@ -94,6 +94,6 @@ class AddRSSController: UITableViewController, UITextFieldDelegate {
 }
 
 protocol AddRSSDelegate {
-    func addFeed(feed: RSSFeed, sender: AnyObject)
-    func editFeed(feed: RSSFeed, sender: AnyObject)
+    func addFeed(_ feed: RSSFeed, sender: AnyObject)
+    func editFeed(_ feed: RSSFeed, sender: AnyObject)
 }

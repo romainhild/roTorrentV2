@@ -9,19 +9,19 @@
 import Foundation
 
 func documentsDirectory() -> NSString {
-    return NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as NSString
+    return NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0] as NSString
 }
 
-func localFilePathForUrl(previewUrl: String) -> NSURL? {
+func localFilePathForUrl(_ previewUrl: String) -> URL? {
     let documentsPath = documentsDirectory()
-    if let url = NSURL(string: previewUrl), lastPathComponent = url.lastPathComponent {
-        let fullPath = documentsPath.stringByAppendingPathComponent(lastPathComponent)
-        return NSURL(fileURLWithPath:fullPath)
+    if let url = URL(string: previewUrl), let lastPathComponent = url.lastPathComponent {
+        let fullPath = documentsPath.appendingPathComponent(lastPathComponent)
+        return URL(fileURLWithPath:fullPath)
     }
     return nil
 }
 
 func prefPath() -> String {
-    return (documentsDirectory() as NSString).stringByAppendingPathComponent("pref.plist")
+    return (documentsDirectory() as NSString).appendingPathComponent("pref.plist")
 }
 

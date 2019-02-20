@@ -10,149 +10,149 @@ import Foundation
 
 enum RTorrentCall {
     
-    case AddTorrent(String, String)
-    case AddTorrentRaw(String)
-    case ListMethods
-    case MethodSignature(String)
-    case MethodHelp(String)
-    case DlList
-    case ViewList
-    case BaseDirectory
-    case Execute([String])
-    case ListDirectories(String)
-    case MoveFile(String, String)
-    case DeleteFiles(String)
-    case LoadURL(String)
-    case Filename(String)
-    case Hash(String)
-    case Date(String)
-    case Size(String)
-    case SizeCompleted(String)
-    case SizeLeft(String)
-    case SizeUP(String)
-    case Path(String)
-    case Directory(String)
-    case SpeedDL(String)
-    case SpeedUP(String)
-    case Leechers(String)
-    case Seeders(String)
-    case Ratio(String)
-    case State(String)
-    case Message(String)
-    case IsActive(String)
-    case IsOpen(String)
-    case Views(String)
-    case NumberOfFiles(String)
-    case NumberOfTrackers(String)
-    case Pause(String)
-    case Resume(String)
-    case Start(String)
-    case Stop(String)
-    case SetDirectory(String, String)
-    case Erase(String)
-    case DMultiCall(String,[RTorrentCall])
-    case FilesName(String)
-    case FilesSize(String)
-    case FMultiCall(String,[RTorrentCall])
-    case TrackerURL(String)
-    case TrackerSeeders(String)
-    case TrackerLeechers(String)
-    case TMultiCall(String,[RTorrentCall])
-    case SystemMultiCall([RTorrentCall])
+    case addTorrent(String, String)
+    case addTorrentRaw(String)
+    case listMethods
+    case methodSignature(String)
+    case methodHelp(String)
+    case dlList
+    case viewList
+    case baseDirectory
+    case execute([String])
+    case listDirectories(String)
+    case moveFile(String, String)
+    case deleteFiles(String)
+    case loadURL(String)
+    case filename(String)
+    case hash(String)
+    case date(String)
+    case size(String)
+    case sizeCompleted(String)
+    case sizeLeft(String)
+    case sizeUP(String)
+    case path(String)
+    case directory(String)
+    case speedDL(String)
+    case speedUP(String)
+    case leechers(String)
+    case seeders(String)
+    case ratio(String)
+    case state(String)
+    case message(String)
+    case isActive(String)
+    case isOpen(String)
+    case views(String)
+    case numberOfFiles(String)
+    case numberOfTrackers(String)
+    case pause(String)
+    case resume(String)
+    case start(String)
+    case stop(String)
+    case setDirectory(String, String)
+    case erase(String)
+    case dMultiCall(String,[RTorrentCall])
+    case filesName(String)
+    case filesSize(String)
+    case fMultiCall(String,[RTorrentCall])
+    case trackerURL(String)
+    case trackerSeeders(String)
+    case trackerLeechers(String)
+    case tMultiCall(String,[RTorrentCall])
+    case systemMultiCall([RTorrentCall])
     
     var methodName: String {
         switch self {
-        case .AddTorrent:
+        case .addTorrent:
             return "schedule"
-        case .AddTorrentRaw:
+        case .addTorrentRaw:
             return "load_raw_start"
-        case .ListMethods:
+        case .listMethods:
             return "system.listMethods"
-        case .MethodSignature:
+        case .methodSignature:
             return "system.methodSignature"
-        case .MethodHelp:
+        case .methodHelp:
             return "system.methodHelp"
-        case DlList:
+        case .dlList:
             return "download_list"
-        case ViewList:
+        case .viewList:
             return "view_list"
-        case BaseDirectory:
+        case .baseDirectory:
             return "get_directory"
-        case Execute, .ListDirectories, .MoveFile, .DeleteFiles:
+        case .execute, .listDirectories, .moveFile, .deleteFiles:
             return "execute_capture"
-        case LoadURL:
+        case .loadURL:
             return "load_start"
-        case Filename:
+        case .filename:
             return "d.get_base_filename"
-        case Hash:
+        case .hash:
             return "d.get_hash"
-        case Date:
+        case .date:
             return "d.timestamp.started"
-        case Size:
+        case .size:
             return "d.get_size_bytes"
-        case SizeCompleted:
+        case .sizeCompleted:
             return "d.get_completed_bytes"
-        case SizeLeft:
+        case .sizeLeft:
             return "d.get_left_bytes"
-        case SizeUP:
+        case .sizeUP:
             return "d.get_up_total"
-        case Path:
+        case .path:
             return "d.get_base_path"
-        case Directory:
+        case .directory:
             return "d.get_directory_base"
-        case SpeedDL:
+        case .speedDL:
             return "d.get_down_rate"
-        case SpeedUP:
+        case .speedUP:
             return "d.get_up_rate"
-        case Leechers:
+        case .leechers:
             return "d.get_peers_accounted"
-        case Seeders:
+        case .seeders:
             return "d.get_peers_complete"
-        case Ratio:
+        case .ratio:
             return "d.get_ratio"
-        case State:
+        case .state:
             return "d.get_state"
-        case Message:
+        case .message:
             return "d.get_message"
-        case .IsActive:
+        case .isActive:
             return "d.is_active"
-        case .IsOpen:
+        case .isOpen:
             return "d.is_open"
-        case .Views:
+        case .views:
             return "d.views"
-        case .NumberOfFiles:
+        case .numberOfFiles:
             return "d.get_size_files"
-        case .NumberOfTrackers:
+        case .numberOfTrackers:
             return "d.get_tracker_size"
-        case .Pause:
+        case .pause:
             return "d.pause"
-        case .Resume:
+        case .resume:
             return "d.resume"
-        case .Start:
+        case .start:
             return "d.start"
-        case .Stop:
+        case .stop:
             return "d.stop"
-        case .SetDirectory:
+        case .setDirectory:
             return "d.set_directory"
-        case .Erase:
+        case .erase:
             return "d.erase"
-        case DMultiCall:
+        case .dMultiCall:
             return "d.multicall"
-        case FilesName:
+        case .filesName:
             return "f.path"
-        case FilesSize:
+        case .filesSize:
             return "f.get_size_bytes"
-        case FMultiCall:
+        case .fMultiCall:
             return "f.multicall"
-        case TrackerURL:
+        case .trackerURL:
             return "t.get_url"
-        case TrackerSeeders:
+        case .trackerSeeders:
             return "t.get_scrape_complete"
-        case TrackerLeechers:
+        case .trackerLeechers:
             return "t.get_scrape_incomplete"
-        case TMultiCall:
+        case .tMultiCall:
             return "t.multicall"
-        case .SystemMultiCall:
+        case .systemMultiCall:
             return "system.multicall"
         }
     }
@@ -160,7 +160,7 @@ enum RTorrentCall {
     var paramList: [String] {
         var p = [String]()
         switch self {
-        case AddTorrent(let torrent, let directory):
+        case .addTorrent(let torrent, let directory):
             p.append("<value><string>add_torrent</string></value>")
             p.append("<value><string>0</string></value>")
             p.append("<value><string>0</string></value>")
@@ -170,118 +170,118 @@ enum RTorrentCall {
             }
             pp += "</string></value>"
             p.append(pp)
-        case .AddTorrentRaw(let torrentData):
+        case .addTorrentRaw(let torrentData):
             p.append("<value><base64>\(torrentData)</base64></value>")
-        case .ListMethods, .DlList,.ViewList,.BaseDirectory:
+        case .listMethods, .dlList,.viewList,.baseDirectory:
             break
-        case .MethodSignature(let method):
+        case .methodSignature(let method):
             p.append("<value><string>\(method)</string></value>")
-        case .MethodHelp(let method):
+        case .methodHelp(let method):
             p.append("<value><string>\(method)</string></value>")
-        case Execute(let array):
+        case .execute(let array):
             for item in array {
                 p.append("<value><string>\(item)</string></value>")
             }
-        case .ListDirectories(let dir):
+        case .listDirectories(let dir):
             p.append("<value><string>find</string></value>")
             p.append("<value><string>\(dir)</string></value>")
             p.append("<value><string>-maxdepth</string></value>")
             p.append("<value><string>1</string></value>")
             p.append("<value><string>-mindepth</string></value>")
             p.append("<value><string>1</string></value>")
-        case .MoveFile(let path, let newDir):
+        case .moveFile(let path, let newDir):
             p.append("<value><string>mv</string></value>")
             p.append("<value><string>\(path)</string></value>")
             p.append("<value><string>\(newDir)</string></value>")
-        case .DeleteFiles(let path):
+        case .deleteFiles(let path):
             p.append("<value><string>rm</string></value>")
             p.append("<value><string>-r</string></value>")
             p.append("<value><string>\(path)</string></value>")
-        case LoadURL(let url):
+        case .loadURL(let url):
             p.append("<value><string>\(url)</string></value>")
-        case Filename(let hash):
+        case .filename(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Hash(let hash):
+        case .hash(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Date(let hash):
+        case .date(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Size(let hash):
+        case .size(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case SizeCompleted(let hash):
+        case .sizeCompleted(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case SizeLeft(let hash):
+        case .sizeLeft(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case SizeUP(let hash):
+        case .sizeUP(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Path(let hash):
+        case .path(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Directory(let hash):
+        case .directory(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case SpeedDL(let hash):
+        case .speedDL(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case SpeedUP(let hash):
+        case .speedUP(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Leechers(let hash):
+        case .leechers(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Seeders(let hash):
+        case .seeders(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Ratio(let hash):
+        case .ratio(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case State(let hash):
+        case .state(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case Message(let hash):
+        case .message(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .IsActive(let hash):
+        case .isActive(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .IsOpen(let hash):
+        case .isOpen(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .Views(let hash):
+        case .views(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .NumberOfFiles(let hash):
+        case .numberOfFiles(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .NumberOfTrackers(let hash):
+        case .numberOfTrackers(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .Pause(let hash):
+        case .pause(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .Resume(let hash):
+        case .resume(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .Start(let hash):
+        case .start(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .Stop(let hash):
+        case .stop(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case .SetDirectory(let hash, let directory):
+        case .setDirectory(let hash, let directory):
             p.append("<value><string>\(hash)</string></value>")
             p.append("<value><string>\(directory)</string></value>")
-        case .Erase(let hash):
+        case .erase(let hash):
             p.append("<value><string>\(hash)</string></value>")
-        case DMultiCall(let view, let array):
+        case .dMultiCall(let view, let array):
             p.append("<value><string>\(view)</string></value>")
             for item in array {
                 p.append("<value><string>\(item.methodName)=</string></value>")
             }
-        case .FilesName(let hashF):
+        case .filesName(let hashF):
             p.append("<value><string>\(hashF)</string></value>")
-        case .FilesSize(let hashF):
+        case .filesSize(let hashF):
             p.append("<value><string>\(hashF)</string></value>")
-        case FMultiCall(let hash, let array):
+        case .fMultiCall(let hash, let array):
             p.append("<value><string>\(hash)</string></value>")
             p.append("<value><string></string></value>")
             for item in array {
                 p.append("<value><string>\(item.methodName)=</string></value>")
             }
-        case .TrackerURL(let hashT):
+        case .trackerURL(let hashT):
             p.append("<value><string>\(hashT)</string></value>")
-        case .TrackerSeeders(let hashT):
+        case .trackerSeeders(let hashT):
             p.append("<value><string>\(hashT)</string></value>")
-        case .TrackerLeechers(let hashT):
+        case .trackerLeechers(let hashT):
             p.append("<value><string>\(hashT)</string></value>")
-        case .TMultiCall(let hash, let array):
+        case .tMultiCall(let hash, let array):
             p.append("<value><string>\(hash)</string></value>")
             p.append("<value><string></string></value>")
             for item in array {
                 p.append("<value><string>\(item.methodName)=</string></value>")
             }
-        case .SystemMultiCall:
+        case .systemMultiCall:
             break
         }
         return p
@@ -290,7 +290,7 @@ enum RTorrentCall {
     var param: String {
         var p = ""
         switch self {
-        case .SystemMultiCall(let array):
+        case .systemMultiCall(let array):
             p += "<param><value><array><data>"
             for method in array {
                 p += "<value><struct>"

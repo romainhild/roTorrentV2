@@ -10,13 +10,13 @@ import Foundation
 
 class RSSItem: NSObject {
     var title: String
-    var link: NSURL
-    var pubDate: NSDate
+    var link: URL
+    var pubDate: Date
     var desc: String?
     
     var hasBeenAdded = false
     
-    init(title: String, link: NSURL, date: NSDate, description: String? = nil) {
+    init(title: String, link: URL, date: Date, description: String? = nil) {
         self.title = title
         self.link = link
         self.pubDate = date
@@ -24,12 +24,12 @@ class RSSItem: NSObject {
         super.init()
     }
     
-    func match(search: String) -> Bool {
+    func match(_ search: String) -> Bool {
         if !search.isEmpty {
-            var searchAsRegex = search.stringByReplacingOccurrencesOfString(" ", withString: ".")
-            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("_", withString: ".")
-            searchAsRegex = searchAsRegex.stringByReplacingOccurrencesOfString("-", withString: ".")
-            let b = title.rangeOfString(searchAsRegex, options: [.RegularExpressionSearch, .CaseInsensitiveSearch])
+            var searchAsRegex = search.replacingOccurrences(of: " ", with: ".")
+            searchAsRegex = searchAsRegex.replacingOccurrences(of: "_", with: ".")
+            searchAsRegex = searchAsRegex.replacingOccurrences(of: "-", with: ".")
+            let b = title.range(of: searchAsRegex, options: [.regularExpression, .caseInsensitive])
             return (b != nil)
         } else {
             return true
@@ -39,5 +39,5 @@ class RSSItem: NSObject {
 }
 
 func < (lhs: RSSItem, rhs: RSSItem) -> Bool {
-    return lhs.pubDate.compare(rhs.pubDate) == .OrderedDescending
+    return lhs.pubDate.compare(rhs.pubDate) == .orderedDescending
 }

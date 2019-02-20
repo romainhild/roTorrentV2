@@ -21,51 +21,51 @@ class DownloadListController: UITableViewController {
         super.viewDidLoad()
         
         let nib = UINib(nibName: cellId, bundle: nil)
-        self.tableView.registerNib(nib, forCellReuseIdentifier: cellId)
+        self.tableView.register(nib, forCellReuseIdentifier: cellId)
         self.tableView.rowHeight = 78
 
-        let mainRect = UIScreen.mainScreen().bounds
+        let mainRect = UIScreen.main.bounds
         searchBar = UISearchBar(frame: CGRect(x: 0,y: 0,width: mainRect.width-20,height: 56))
         searchBar.delegate = self
         searchBar.placeholder = "Search Torrent"
         searchBar.enablesReturnKeyAutomatically = false
         tableView.tableHeaderView = searchBar
-        tableView.contentOffset = CGPointMake(0, searchBar.frame.size.height)
+        tableView.contentOffset = CGPoint(x: 0, y: searchBar.frame.size.height)
 
         self.refreshControl = UIRefreshControl()
-        self.refreshControl?.addTarget(self, action: #selector(DownloadListController.refresh(_:)), forControlEvents: .ValueChanged)
+        self.refreshControl?.addTarget(self, action: #selector(DownloadListController.refresh(_:)), for: .valueChanged)
         
         recognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(DownloadListController.filter(_:)))
-        recognizer.edges = .Left
+        recognizer.edges = .left
         view.addGestureRecognizer(recognizer)
 
         refresh(self)
     }
     
-    func refresh(sender: AnyObject) {
+    func refresh(_ sender: AnyObject) {
         let call = manager.callToInitList()
         manager.call(call) {response in
             switch response {
-            case .Success(let xmltype):
-                dispatch_async(dispatch_get_main_queue()) {
+            case .success(let xmltype):
+                DispatchQueue.main.async {
                     self.refreshControl?.endRefreshing()
                     self.manager.torrents.initWithXmlArray(xmltype)
                     self.manager.updateTorrentsToDiplay()
                     self.tableView.reloadData()
                 }
-            case .Failure(let error):
-                let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-                let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .Alert)
+            case .failure(let error):
+                let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .alert)
                 alert.addAction(ok)
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshControl?.endRefreshing()
-                    self.presentViewController(alert, animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
                 }
             }
         }
     }
 
-    @IBAction func filter(sender: AnyObject) {
+    @IBAction func filter(_ sender: AnyObject) {
         if (sender as! NSObject) != recognizer {
             delegate?.toggleFilterPanel(nil)
         } else {
@@ -73,23 +73,23 @@ class DownloadListController: UITableViewController {
         }
     }
     
-    @IBAction func addTorrent(sender: AnyObject) {
-        let alert = UIAlertController(title: "Add Torrent via URL", message: "And choose a directory", preferredStyle: .Alert)
-        alert.addTextFieldWithConfigurationHandler { textField in
+    @IBAction func addTorrent(_ sender: AnyObject) {
+        let alert = UIAlertController(title: "Add Torrent via URL", message: "And choose a directory", preferredStyle: .alert)
+        alert.addTextField { textField in
             textField.placeholder = "URL"
         }
-        let baseDir = UIAlertAction(title: "Base Directory", style: .Default) { action in
-            let call = RTorrentCall.AddTorrent(alert.textFields![0].text!, "")
+        let baseDir = UIAlertAction(title: "Base Directory", style: .default) { action in
+            let call = RTorrentCall.addTorrent(alert.textFields![0].text!, "")
             self.manager.call(call, completionHandler: self.responseToAddTorrent)
         }
         alert.addAction(baseDir)
-        let otherDir = UIAlertAction(title: "Other Directory...", style: .Default) { action in
-            self.performSegueWithIdentifier("ThroughFolder", sender: alert.textFields![0].text)
+        let otherDir = UIAlertAction(title: "Other Directory...", style: .default) { action in
+            self.performSegue(withIdentifier: "ThroughFolder", sender: alert.textFields![0].text)
         }
         alert.addAction(otherDir)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         alert.addAction(cancel)
-        self.presentViewController(alert, animated: true, completion: nil)
+        self.present(alert, animated: true, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
@@ -99,32 +99,32 @@ class DownloadListController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return manager.numberOfTorrentToDispplay(searchBar.text)
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier(cellId, forIndexPath: indexPath) as! TorrentCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TorrentCell
         let torrent = manager.torrentAtIndexPath(indexPath, searchText: searchBar.text)
         cell.configureForTorrent(torrent)
         return cell
     }
     
-    override func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 78
     }
     
-    override func tableView(tableView: UITableView, estimatedHeightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 78
     }
     
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         let torrent = manager.torrentAtIndexPath(indexPath, searchText: searchBar.text)
-        performSegueWithIdentifier("DetailTorrent", sender: torrent)
+        performSegue(withIdentifier: "DetailTorrent", sender: torrent)
         return nil
     }
 
@@ -165,14 +165,14 @@ class DownloadListController: UITableViewController {
 
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DetailTorrent" {
-            let controller = segue.destinationViewController as! DetailTorrentController
+            let controller = segue.destination as! DetailTorrentController
             controller.manager = self.manager
             let torrent = sender as! Torrent
             controller.torrent = torrent
         } else if segue.identifier == "ThroughFolder" {
-            let nav = segue.destinationViewController as! UINavigationController
+            let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! ThroughFolderController
             controller.manager = self.manager
             controller.delegate = self
@@ -180,45 +180,45 @@ class DownloadListController: UITableViewController {
         }
     }
 
-    func responseToAddTorrent(response: Response<XMLRPCType,NSError>) {
+    func responseToAddTorrent(_ response: Response<XMLRPCType,NSError>) {
         switch response {
-        case .Success:
-            dispatch_async(dispatch_get_main_queue()) {
+        case .success:
+            DispatchQueue.main.async {
                 self.refresh(self)
             }
-        case .Failure(let error):
-            let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
-            let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .Alert)
+        case .failure(let error):
+            let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
+            let alert = UIAlertController(title: "Oops", message: error.localizedDescription, preferredStyle: .alert)
             alert.addAction(ok)
-            dispatch_async(dispatch_get_main_queue()) {
+            DispatchQueue.main.async {
                 self.refreshControl?.endRefreshing()
-                self.presentViewController(alert, animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
 }
 
 extension DownloadListController: UISearchBarDelegate {
-    func searchBar(searchBar: UISearchBar, textDidChange searchText: String) {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         self.tableView.reloadData()
     }
     
-    func searchBarSearchButtonClicked(searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         self.searchBar.resignFirstResponder()
     }
 }
 
 extension DownloadListController: ThroughFolderDelegate {
-    func controllerDidCancel(controller: ThroughFolderController) {
+    func controllerDidCancel(_ controller: ThroughFolderController) {
         
     }
     
-    func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String) {
-        let call = RTorrentCall.AddTorrent(url, directory)
+    func controller(_ controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String) {
+        let call = RTorrentCall.addTorrent(url, directory)
         self.manager.call(call, completionHandler: responseToAddTorrent)
     }
 }
 
 protocol DownloadListControllerDelegate {
-    func toggleFilterPanel(edgeRecognizer: UIScreenEdgePanGestureRecognizer?)
+    func toggleFilterPanel(_ edgeRecognizer: UIScreenEdgePanGestureRecognizer?)
 }

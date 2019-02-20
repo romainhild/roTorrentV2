@@ -8,9 +8,9 @@
 
 import Foundation
 
-class RSSParser: NSObject, NSXMLParserDelegate {
+class RSSParser: NSObject, XMLParserDelegate {
     
-    let parser: NSXMLParser
+    let parser: XMLParser
     
     var rssItems = [RSSItem]()
     
@@ -20,12 +20,12 @@ class RSSParser: NSObject, NSXMLParserDelegate {
     var isDate = false
     var isDesc = false
     var titleTmp: String?
-    var linkTmp: NSURL?
-    var dateTmp: NSDate?
+    var linkTmp: URL?
+    var dateTmp: Date?
     var descTmp: String?
     
-    init?(contentsOfURL url: NSURL) {
-        if let parser = NSXMLParser(contentsOfURL: url) {
+    init?(contentsOfURL url: URL) {
+        if let parser = XMLParser(contentsOf: url) {
             self.parser = parser
             super.init()
             parser.delegate = self
@@ -38,7 +38,7 @@ class RSSParser: NSObject, NSXMLParserDelegate {
         return parser.parse()
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         switch elementName {
         case "item":
             isInItem = true
@@ -59,13 +59,13 @@ class RSSParser: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         if isInItem {
             if isTitle {
                 titleTmp = string
             } else if isLink {
                 linkTmp =
-                    NSURL(dataRepresentation: string.dataUsingEncoding(NSUTF8StringEncoding)!, relativeToURL: nil)
+                    URL(dataRepresentation: string.data(using: String.Encoding.utf8)!, relativeTo: nil)
             } else if isDate {
                 let dateFormatter = DateFormatterSingleton.sharedInstance
                 dateTmp = dateFormatter.dateFromString(string)
@@ -75,7 +75,7 @@ class RSSParser: NSObject, NSXMLParserDelegate {
         }
     }
     
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         switch elementName {
         case "item":
             isInItem = false

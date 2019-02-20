@@ -11,39 +11,39 @@ import Foundation
 class DateFormatterSingleton {
     static let sharedInstance = DateFormatterSingleton()
     
-    var dateFormatter: NSDateFormatter
+    var dateFormatter: DateFormatter
     
-    private init() {
-        dateFormatter = NSDateFormatter()
-        dateFormatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+    fileprivate init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = "EEE, dd MMM yyyy HH:mm:ss Z"
     }
     
-    func stringFromDate(date: NSDate) -> String {
-        return dateFormatter.stringFromDate(date)
+    func stringFromDate(_ date: Date) -> String {
+        return dateFormatter.string(from: date)
     }
     
-    func dateFromString(string: String) -> NSDate? {
-        return dateFormatter.dateFromString(string)
+    func dateFromString(_ string: String) -> Date? {
+        return dateFormatter.date(from: string)
     }
     
-    func dateFromInt(int: Int) -> NSDate? {
-        return dateFormatter.dateFromString(String(int))
+    func dateFromInt(_ int: Int) -> Date? {
+        return dateFormatter.date(from: String(int))
     }
 }
 
 class ShortFormatterSingleton {
     static let sharedInstance = ShortFormatterSingleton()
     
-    var dateFormatter: NSDateFormatter
+    var dateFormatter: DateFormatter
     
-    private init() {
-        dateFormatter = NSDateFormatter()
-        dateFormatter.dateStyle = .MediumStyle
-        dateFormatter.timeStyle = .MediumStyle
+    fileprivate init() {
+        dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .medium
     }
     
-    func stringFromDate(date: NSDate) -> String {
-        return dateFormatter.stringFromDate(date)
+    func stringFromDate(_ date: Date) -> String {
+        return dateFormatter.string(from: date)
     }
 }

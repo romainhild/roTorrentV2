@@ -10,27 +10,27 @@ import Foundation
 
 class Manager: NSObject, NSCoding {
     
-    let urlComponents: NSURLComponents
-    var url: NSURL? {
-        return urlComponents.URL
+    let urlComponents: URLComponents
+    var url: URL? {
+        return urlComponents.url
     }
-    let session = NSURLSession.sharedSession()
+    let session = URLSession.shared
     var mutableRequest: NSMutableURLRequest?
-    var dataTask: NSURLSessionDataTask?
+    var dataTask: URLSessionDataTask?
     
     var torrents = Torrents()
     var torrentsToDisplay = [Torrent]()
-    var sortDlIn = SortingOrder.Ascending {
+    var sortDlIn = SortingOrder.ascending {
         didSet {
             updateTorrentsToDiplay()
         }
     }
-    var sortDlBy = SortingBy.Date {
+    var sortDlBy = SortingBy.date {
         didSet {
             updateTorrentsToDiplay()
         }
     }
-    var filterDlBy = FilterBy.All {
+    var filterDlBy = FilterBy.all {
         didSet {
             updateTorrentsToDiplay()
         }
@@ -48,7 +48,7 @@ class Manager: NSObject, NSCoding {
     }
     
     override init() {
-        urlComponents = NSURLComponents()
+        urlComponents = URLComponents()
         urlComponents.scheme = "https"
         
         feeds = [RSSFeed]()
@@ -57,33 +57,33 @@ class Manager: NSObject, NSCoding {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        urlComponents = NSURLComponents()
+        urlComponents = URLComponents()
         urlComponents.scheme = "https"
-        if let host = aDecoder.decodeObjectForKey("host") as? String {
+        if let host = aDecoder.decodeObject(forKey: "host") as? String {
             urlComponents.host = host
         }
-        if let user = aDecoder.decodeObjectForKey("user") as? String {
+        if let user = aDecoder.decodeObject(forKey: "user") as? String {
             urlComponents.user = user
         }
-        if let password = aDecoder.decodeObjectForKey("password") as? String {
+        if let password = aDecoder.decodeObject(forKey: "password") as? String {
             urlComponents.password = password
         }
-        if let path = aDecoder.decodeObjectForKey("path") as? String {
+        if let path = aDecoder.decodeObject(forKey: "path") as? String {
             urlComponents.path = path
         }
-        if let feeds = aDecoder.decodeObjectForKey("feeds") as? [RSSFeed] {
+        if let feeds = aDecoder.decodeObject(forKey: "feeds") as? [RSSFeed] {
             self.feeds = feeds
         }
-        if let feedToDisplay = aDecoder.decodeObjectForKey("feedToDisplay") as? RSSFeed {
+        if let feedToDisplay = aDecoder.decodeObject(forKey: "feedToDisplay") as? RSSFeed {
             self.feedToDisplay = feedToDisplay
         }
-        if let sortIn = SortingOrder(rawValue: aDecoder.decodeIntegerForKey("sortDlIn")) {
+        if let sortIn = SortingOrder(rawValue: aDecoder.decodeInteger(forKey: "sortDlIn")) {
             self.sortDlIn = sortIn
         }
-        if let sortBy = SortingBy(rawValue: aDecoder.decodeIntegerForKey("sortDlBy")) {
+        if let sortBy = SortingBy(rawValue: aDecoder.decodeInteger(forKey: "sortDlBy")) {
             self.sortDlBy = sortBy
         }
-        if let filterBy = FilterBy(rawValue: aDecoder.decodeIntegerForKey("filterDlBy")) {
+        if let filterBy = FilterBy(rawValue: aDecoder.decodeInteger(forKey: "filterDlBy")) {
             self.filterDlBy = filterBy
         }
         
@@ -92,164 +92,164 @@ class Manager: NSObject, NSCoding {
         updateFeeds()
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
+    func encode(with aCoder: NSCoder) {
         if let host = urlComponents.host {
-            aCoder.encodeObject(host, forKey: "host")
+            aCoder.encode(host, forKey: "host")
         }
         if let user = urlComponents.user {
-            aCoder.encodeObject(user, forKey: "user")
+            aCoder.encode(user, forKey: "user")
         }
         if let password = urlComponents.password {
-            aCoder.encodeObject(password, forKey: "password")
+            aCoder.encode(password, forKey: "password")
         }
-        if let path = urlComponents.path {
-            aCoder.encodeObject(path, forKey: "path")
-        }
-        aCoder.encodeObject(feeds, forKey: "feeds")
+//        if let path = urlComponents.path {
+            aCoder.encode(urlComponents.path, forKey: "path")
+//        }
+        aCoder.encode(feeds, forKey: "feeds")
         if let feedToDisplay = feedToDisplay {
-            aCoder.encodeObject(feedToDisplay, forKey: "feedToDisplay")
+            aCoder.encode(feedToDisplay, forKey: "feedToDisplay")
         }
-        aCoder.encodeInteger(sortDlIn.rawValue, forKey: "sortDlIn")
-        aCoder.encodeInteger(sortDlBy.rawValue, forKey: "sortDlBy")
-        aCoder.encodeInteger(filterDlBy.rawValue, forKey: "filterDlBy")
+        aCoder.encode(sortDlIn.rawValue, forKey: "sortDlIn")
+        aCoder.encode(sortDlBy.rawValue, forKey: "sortDlBy")
+        aCoder.encode(filterDlBy.rawValue, forKey: "filterDlBy")
     }
     
-    func call(call: RTorrentCall, completionHandler: Response<XMLRPCType,NSError> -> Void) {
+    func call(_ call: RTorrentCall, completionHandler: @escaping (Response<XMLRPCType,NSError>) -> Void) {
         if let task = dataTask {
             task.cancel()
         }
         initPostRequestWithCall(call )
         if let mutableRequest = mutableRequest {
-            dataTask = session.dataTaskWithRequest(mutableRequest) {
+            dataTask = session.dataTask(with: mutableRequest, completionHandler: {
                 data, response, error in
                 guard error == nil else {
-                    completionHandler(Response.Failure(error!))
+                    completionHandler(Response.failure(error!))
                     return
                 }
                 
-                if let httpResponse = response as? NSHTTPURLResponse {
+                if let httpResponse = response as? HTTPURLResponse {
                     guard httpResponse.statusCode == 200 else {
                         let ui = [NSLocalizedDescriptionKey: "Network Error!\nPlease try again or check the settings."]
                         let e = NSError(domain: "Request", code: 1, userInfo: ui)
-                        completionHandler(.Failure(e))
+                        completionHandler(.failure(e))
                         return
                     }
                     if let data = data {
                         switch call {
-                        case .SystemMultiCall, .SetDirectory, .MoveFile, .Execute:
-                            print(String(data: data, encoding: NSUTF8StringEncoding))
+                        case .systemMultiCall, .setDirectory, .moveFile, .execute:
+                            print(String(data: data, encoding: String.Encoding.utf8))
                         default:
                             break
                         }
                         let parser = XMLRPCParser(data: data)
                         let success = parser.parse()
                         if success {
-                            completionHandler(.Success(parser.result))
+                            completionHandler(.success(parser.result))
                             return
                         } else {
                             let ui = [NSLocalizedDescriptionKey: "Data corrupted!\nPlease try again."]
                             let e = NSError(domain: "Request", code: 2, userInfo: ui)
-                            completionHandler(.Failure(e))
+                            completionHandler(.failure(e))
                             return
                         }
                     } else {
                         let ui = [NSLocalizedDescriptionKey: "Data not found!\nPlease try again."]
                         let e = NSError(domain: "Request", code: 3, userInfo: ui)
-                        completionHandler(.Failure(e))
+                        completionHandler(.failure(e))
                         return
                     }
                 } else {
                     let ui = [NSLocalizedDescriptionKey: "Network Error!\n Please try again or check the settings."]
                     let e = NSError(domain: "Request", code: 4, userInfo: ui)
-                    completionHandler(.Failure(e))
+                    completionHandler(.failure(e))
                     return
                 }
-            }
+            }) 
             dataTask?.resume()
         } else {
             let ui = [NSLocalizedDescriptionKey: "URL not valid\nPlease check the settings."]
             let e = NSError(domain: "Request", code: 5, userInfo: ui)
-            completionHandler(.Failure(e))
+            completionHandler(.failure(e))
         }
     }
     
-    func initPostRequestWithCall(call: RTorrentCall) {
+    func initPostRequestWithCall(_ call: RTorrentCall) {
         mutableRequest = nil
         let body = call.body
-        let bodyData = body.dataUsingEncoding(NSUTF8StringEncoding, allowLossyConversion: false)
-        let length = body.lengthOfBytesUsingEncoding(NSUTF8StringEncoding)
+        let bodyData = body.data(using: String.Encoding.utf8, allowLossyConversion: false)
+        let length = body.lengthOfBytes(using: String.Encoding.utf8)
         
-        if let host = urlComponents.host where !host.isEmpty, let url = url {
-            mutableRequest = NSMutableURLRequest(URL: url)
+        if let host = urlComponents.host, !host.isEmpty, let url = url {
+            mutableRequest = NSMutableURLRequest(url: url)
             mutableRequest!.setValue("text/xml", forHTTPHeaderField: "Content-Type")
             mutableRequest!.setValue("roTorrent", forHTTPHeaderField: "User-Agent")
             mutableRequest!.setValue(String(length), forHTTPHeaderField: "Current-Length")
-            mutableRequest!.HTTPBody = bodyData
-            mutableRequest!.HTTPMethod = "POST"
+            mutableRequest!.httpBody = bodyData
+            mutableRequest!.httpMethod = "POST"
         }
     }
     
-    func callToInitList(view: String = "main") -> RTorrentCall {
-        let list = [RTorrentCall.Filename(""), RTorrentCall.Hash(""), RTorrentCall.Date(""), RTorrentCall.Ratio(""), RTorrentCall.Size(""), RTorrentCall.SizeCompleted(""), RTorrentCall.SizeLeft(""), RTorrentCall.SizeUP(""), RTorrentCall.Path(""), RTorrentCall.Directory(""), RTorrentCall.SpeedDL(""), RTorrentCall.SpeedUP(""), RTorrentCall.Leechers(""), RTorrentCall.Seeders(""), RTorrentCall.State(""), RTorrentCall.IsActive(""), RTorrentCall.Message(""), RTorrentCall.NumberOfFiles(""), RTorrentCall.NumberOfTrackers("")]
-        return RTorrentCall.DMultiCall(view, list)
+    func callToInitList(_ view: String = "main") -> RTorrentCall {
+        let list = [RTorrentCall.filename(""), RTorrentCall.hash(""), RTorrentCall.date(""), RTorrentCall.ratio(""), RTorrentCall.size(""), RTorrentCall.sizeCompleted(""), RTorrentCall.sizeLeft(""), RTorrentCall.sizeUP(""), RTorrentCall.path(""), RTorrentCall.directory(""), RTorrentCall.speedDL(""), RTorrentCall.speedUP(""), RTorrentCall.leechers(""), RTorrentCall.seeders(""), RTorrentCall.state(""), RTorrentCall.isActive(""), RTorrentCall.message(""), RTorrentCall.numberOfFiles(""), RTorrentCall.numberOfTrackers("")]
+        return RTorrentCall.dMultiCall(view, list)
     }
     
-    func callToInitFilesForTorrent(torrent: Torrent) -> RTorrentCall {
-        let list = [RTorrentCall.FilesName(""), RTorrentCall.FilesSize("")]
-        return RTorrentCall.FMultiCall(torrent.hashT, list)
+    func callToInitFilesForTorrent(_ torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.filesName(""), RTorrentCall.filesSize("")]
+        return RTorrentCall.fMultiCall(torrent.hashT, list)
     }
     
-    func callToInitTrackersForTorrent(torrent: Torrent) -> RTorrentCall {
-        let list = [RTorrentCall.TrackerURL(""), RTorrentCall.TrackerSeeders(""), RTorrentCall.TrackerLeechers("")]
-        return RTorrentCall.TMultiCall(torrent.hashT, list)
+    func callToInitTrackersForTorrent(_ torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.trackerURL(""), RTorrentCall.trackerSeeders(""), RTorrentCall.trackerLeechers("")]
+        return RTorrentCall.tMultiCall(torrent.hashT, list)
     }
     
-    func callToRefreshState(torrent: Torrent) -> RTorrentCall {
-        let list = [RTorrentCall.State(torrent.hashT), RTorrentCall.IsActive(torrent.hashT), RTorrentCall.Message(torrent.hashT)]
-        return RTorrentCall.SystemMultiCall(list)
+    func callToRefreshState(_ torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.state(torrent.hashT), RTorrentCall.isActive(torrent.hashT), RTorrentCall.message(torrent.hashT)]
+        return RTorrentCall.systemMultiCall(list)
     }
     
-    func callToMoveTorrent(torrent: Torrent, inNewDirectory directory: String) -> RTorrentCall {
-        let list = [RTorrentCall.Stop(torrent.hashT), RTorrentCall.SetDirectory(torrent.hashT, directory), RTorrentCall.MoveFile(torrent.path, directory), RTorrentCall.Start(torrent.hashT)]
-        return RTorrentCall.SystemMultiCall(list)
+    func callToMoveTorrent(_ torrent: Torrent, inNewDirectory directory: String) -> RTorrentCall {
+        let list = [RTorrentCall.stop(torrent.hashT), RTorrentCall.setDirectory(torrent.hashT, directory), RTorrentCall.moveFile(torrent.path, directory), RTorrentCall.start(torrent.hashT)]
+        return RTorrentCall.systemMultiCall(list)
     }
     
-    func callTorRefreshDirAndPath(torrent: Torrent) -> RTorrentCall {
-        let list = [RTorrentCall.Directory(torrent.hashT), RTorrentCall.Path(torrent.hashT)]
-        return RTorrentCall.SystemMultiCall(list)
+    func callTorRefreshDirAndPath(_ torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.directory(torrent.hashT), RTorrentCall.path(torrent.hashT)]
+        return RTorrentCall.systemMultiCall(list)
     }
     
-    func callToEraseAndDelete(torrent: Torrent) -> RTorrentCall {
-        let list = [RTorrentCall.DeleteFiles(torrent.path), RTorrentCall.Erase(torrent.hashT)]
-        return RTorrentCall.SystemMultiCall(list)
+    func callToEraseAndDelete(_ torrent: Torrent) -> RTorrentCall {
+        let list = [RTorrentCall.deleteFiles(torrent.path), RTorrentCall.erase(torrent.hashT)]
+        return RTorrentCall.systemMultiCall(list)
     }
     
     func updateItemsToDisplay() {
         if let feedToDisplay = feedToDisplay {
-            itemsToDisplay = feedToDisplay.items.sort(<)
+            itemsToDisplay = feedToDisplay.items.sorted(by: <)
         } else {
-            itemsToDisplay = feeds.reduce([RSSItem]()){ $0+$1.items }.sort(<)
+            itemsToDisplay = feeds.reduce([RSSItem]()){ $0+$1.items }.sorted(by: <)
         }
     }
     
     func updateFeeds() {
         for feed in feeds {
-            feed.update()
+            _ = feed.update()
         }
         updateItemsToDisplay()
     }
     
-    func appendRSS(feed: RSSFeed) {
+    func appendRSS(_ feed: RSSFeed) {
         feeds.append(feed)
         updateItemsToDisplay()
     }
     
-    func removeFeed(feed: RSSFeed?) {
-        if let feed = feed, index = feeds.indexOf(feed) {
+    func removeFeed(_ feed: RSSFeed?) {
+        if let feed = feed, let index = feeds.index(of: feed) {
             if feedToDisplay == feed {
                 feedToDisplay = nil
             }
-            feeds.removeAtIndex(index)
+            feeds.remove(at: index)
         } else {
             feedToDisplay = nil
             feeds.removeAll()
@@ -257,7 +257,7 @@ class Manager: NSObject, NSCoding {
         updateItemsToDisplay()
     }
     
-    func numberOtItemsToDisplay(searchText: String?) -> Int {
+    func numberOtItemsToDisplay(_ searchText: String?) -> Int {
         if let searchText = searchText {
             return itemsToDisplay.filter { $0.match(searchText) }.count
         } else {
@@ -265,7 +265,7 @@ class Manager: NSObject, NSCoding {
         }
     }
     
-    func itemToDisplayAtIndexPath(indexPath: NSIndexPath, thatMatch searchText: String?) -> RSSItem {
+    func itemToDisplayAtIndexPath(_ indexPath: IndexPath, thatMatch searchText: String?) -> RSSItem {
         if let searchText = searchText {
             return itemsToDisplay.filter { $0.match(searchText) }[indexPath.row]
         } else {
@@ -275,10 +275,10 @@ class Manager: NSObject, NSCoding {
     
     func updateTorrentsToDiplay() {
         torrentsToDisplay = torrents.filter { $0.isFilterBy(filterDlBy) }
-        torrentsToDisplay.sortInPlace { $0.isOrderedBefore($1, by: sortDlBy, inOrder: sortDlIn) }
+        torrentsToDisplay.sort { $0.isOrderedBefore($1, by: sortDlBy, inOrder: sortDlIn) }
     }
     
-    func numberOfTorrentToDispplay(searchText: String?) -> Int {
+    func numberOfTorrentToDispplay(_ searchText: String?) -> Int {
         if let searchText = searchText {
             return torrentsToDisplay.filter { $0.match(searchText) }.count
         } else {
@@ -286,7 +286,7 @@ class Manager: NSObject, NSCoding {
         }
     }
     
-    func torrentAtIndexPath(indexPath: NSIndexPath, searchText: String?) -> Torrent {
+    func torrentAtIndexPath(_ indexPath: IndexPath, searchText: String?) -> Torrent {
         if let searchText = searchText {
             return torrentsToDisplay.filter { $0.match(searchText) }[indexPath.row]
         } else {
@@ -297,21 +297,21 @@ class Manager: NSObject, NSCoding {
 
 enum Response<SuccessType, FailureType>
 {
-    case Success(SuccessType)
-    case Failure(FailureType)
+    case success(SuccessType)
+    case failure(FailureType)
 }
 
 enum SortingOrder: Int {
-    case Ascending = 0
-    case Descending
+    case ascending = 0
+    case descending
     
-    static var count: Int { return SortingOrder.Descending.rawValue + 1}
-    static func stringOf(index: Int) -> String {
+    static var count: Int { return SortingOrder.descending.rawValue + 1}
+    static func stringOf(_ index: Int) -> String {
         if let sortOrder = SortingOrder(rawValue: index) {
             switch sortOrder {
-            case .Ascending:
+            case .ascending:
                 return "Ascending"
-            case .Descending:
+            case .descending:
                 return "Descending"
             }
         } else {
@@ -321,22 +321,22 @@ enum SortingOrder: Int {
 }
 
 enum SortingBy: Int {
-    case Date = 0
-    case Name
-    case Size
-    case Send
+    case date = 0
+    case name
+    case size
+    case send
     
-    static var count: Int { return SortingBy.Send.rawValue + 1}
-    static func stringOf(index: Int) -> String {
+    static var count: Int { return SortingBy.send.rawValue + 1}
+    static func stringOf(_ index: Int) -> String {
         if let sortBy = SortingBy(rawValue: index) {
             switch sortBy {
-            case .Date:
+            case .date:
                 return "Date"
-            case .Name:
+            case .name:
                 return "Name"
-            case .Size:
+            case .size:
                 return "Size"
-            case .Send:
+            case .send:
                 return "Send"
             }
         } else {
@@ -346,37 +346,37 @@ enum SortingBy: Int {
 }
 
 enum FilterBy: Int {
-    case All = 0
-    case Sending
-    case Receiving
-    case Seeding
-    case Leeching
-    case Error
-    case Pause
-    case Stop
-    case Active
+    case all = 0
+    case sending
+    case receiving
+    case seeding
+    case leeching
+    case error
+    case pause
+    case stop
+    case active
     
-    static var count: Int { return FilterBy.Active.rawValue + 1}
-    static func stringOf(index: Int) -> String {
+    static var count: Int { return FilterBy.active.rawValue + 1}
+    static func stringOf(_ index: Int) -> String {
         if let filterBy = FilterBy(rawValue: index) {
             switch filterBy {
-            case .All:
+            case .all:
                 return "All"
-            case .Sending:
+            case .sending:
                 return "Sending"
-            case .Receiving:
+            case .receiving:
                 return "Receiving"
-            case .Seeding:
+            case .seeding:
                 return "Seeding"
-            case .Leeching:
+            case .leeching:
                 return "Leeching"
-            case .Error:
+            case .error:
                 return "Error"
-            case .Pause:
+            case .pause:
                 return "Pause"
-            case .Stop:
+            case .stop:
                 return "Stop"
-            case .Active:
+            case .active:
                 return "Active"
                 
             }

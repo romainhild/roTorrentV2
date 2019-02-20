@@ -10,14 +10,14 @@ import Foundation
 
 class RSSFeed: NSObject, NSCoding {
     var title: String
-    var link: NSURL
-    var lastUpdate: NSDate
+    var link: URL
+    var lastUpdate: Date
     var items: [RSSItem]
     
-    init?(title t: String, link l: NSURL) {
+    init?(title t: String, link l: URL) {
         title = t
         link = l
-        lastUpdate = NSDate()
+        lastUpdate = Date()
         items = [RSSItem]()
         
         super.init()
@@ -26,9 +26,9 @@ class RSSFeed: NSObject, NSCoding {
     }
     
     required init?(coder aDecoder: NSCoder) {
-        title = aDecoder.decodeObjectForKey("title") as! String
-        link = aDecoder.decodeObjectForKey("link") as! NSURL
-        lastUpdate = aDecoder.decodeObjectForKey("lastUpdate") as! NSDate
+        title = aDecoder.decodeObject(forKey: "title") as! String
+        link = aDecoder.decodeObject(forKey: "link") as! URL
+        lastUpdate = aDecoder.decodeObject(forKey: "lastUpdate") as! Date
         items = [RSSItem]()
         
         super.init()
@@ -36,15 +36,15 @@ class RSSFeed: NSObject, NSCoding {
         update()
     }
     
-    func encodeWithCoder(aCoder: NSCoder) {
-        aCoder.encodeObject(title, forKey: "title")
-        aCoder.encodeObject(link, forKey: "link")
-        aCoder.encodeObject(lastUpdate, forKey: "lastUpdate")
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(title, forKey: "title")
+        aCoder.encode(link, forKey: "link")
+        aCoder.encode(lastUpdate, forKey: "lastUpdate")
     }
     
     func update() -> Bool? {
         if let parser = RSSParser(contentsOfURL: link) {
-            lastUpdate = NSDate()
+            lastUpdate = Date()
             if parser.parse() {
                 items = parser.rssItems
                 return true

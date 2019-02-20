@@ -9,69 +9,69 @@
 import Foundation
 
 public enum XMLRPCType: CustomStringConvertible {
-    case XMLRPCInt(Int)
-    case XMLRPCBool(Bool)
-    case XMLRPCString(String)
-    case XMLRPCDouble(Double)
-    case XMLRPCDate(NSDate)
-    case XMLRPCData(NSData)
-    case XMLRPCStruct([String:XMLRPCType])
-    case XMLRPCArray([XMLRPCType])
-    case XMLRPCNil
+    case xmlrpcInt(Int)
+    case xmlrpcBool(Bool)
+    case xmlrpcString(String)
+    case xmlrpcDouble(Double)
+    case xmlrpcDate(Date)
+    case xmlrpcData(Data)
+    case xmlrpcStruct([String:XMLRPCType])
+    case xmlrpcArray([XMLRPCType])
+    case xmlrpcNil
     
     public var description: String {
         get {
             switch self {
-            case .XMLRPCInt(let int):
+            case .xmlrpcInt(let int):
                 return String(int)
-            case .XMLRPCBool(let bool):
+            case .xmlrpcBool(let bool):
                 return String(bool)
-            case .XMLRPCString(let string):
+            case .xmlrpcString(let string):
                 return string
-            case .XMLRPCDouble(let double):
+            case .xmlrpcDouble(let double):
                 return String(double)
-            case .XMLRPCDate(let date):
-                return String(date)
-            case .XMLRPCData(let data):
-                return String(data: data, encoding: NSUTF8StringEncoding)!
-            case .XMLRPCStruct(let dict):
+            case .xmlrpcDate(let date):
+                return String(describing: date)
+            case .xmlrpcData(let data):
+                return String(data: data, encoding: String.Encoding.utf8)!
+            case .xmlrpcStruct(let dict):
                 var s = "[\n"
                 for (key,value) in dict {
                     s += "\(key) : \(value)\n"
                 }
-                if let range = s.rangeOfString(", ") {
-                    s.removeRange(range)
+                if let range = s.range(of: ", ") {
+                    s.removeSubrange(range)
                 }
                 s += "]"
                 return s
-            case .XMLRPCArray(let array):
+            case .xmlrpcArray(let array):
                 var s = "[\n"
                 for item in array {
                     s += "\(item)\n"
                 }
-                if let range = s.rangeOfString(", ") {
-                    s.removeRange(range)
+                if let range = s.range(of: ", ") {
+                    s.removeSubrange(range)
                 }
                 s += "]"
                 return s
-            case .XMLRPCNil:
+            case .xmlrpcNil:
                 return "nil"
             }
         }
     }
 }
 
-class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
+class XMLRPCParser : XMLParser, XMLParserDelegate
 {
-    var result = XMLRPCType.XMLRPCNil
+    var result = XMLRPCType.xmlrpcNil
     var tmp = [Any]()
     var type: String = ""
-    var scalar: XMLRPCType = .XMLRPCNil
+    var scalar: XMLRPCType = .xmlrpcNil
     var isFault: Bool = false
     var hasValue: Bool = false
     
     
-    override init(data: NSData) {
+    override init(data: Data) {
         super.init(data: data)
         self.delegate = self
         shouldProcessNamespaces = false
@@ -84,14 +84,14 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
         return !isFault
     }
     
-    func parserDidStartDocument(parser: NSXMLParser) {
+    func parserDidStartDocument(_ parser: XMLParser) {
     }
     
-    func parserDidEndDocument(parser: NSXMLParser) {
+    func parserDidEndDocument(_ parser: XMLParser) {
         result = tmp.removeLast() as! XMLRPCType
     }
     
-    func parser(parser: NSXMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
+    func parser(_ parser: XMLParser, didStartElement elementName: String, namespaceURI: String?, qualifiedName qName: String?, attributes attributeDict: [String : String]) {
         type = elementName
         switch elementName {
         case "params":
@@ -99,9 +99,9 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
         case "fault":
             isFault = true
         case "struct":
-            tmp.append(XMLRPCType.XMLRPCStruct([String:XMLRPCType]()))
+            tmp.append(XMLRPCType.xmlrpcStruct([String:XMLRPCType]()))
         case "array":
-            tmp.append(XMLRPCType.XMLRPCArray([XMLRPCType]()))
+            tmp.append(XMLRPCType.xmlrpcArray([XMLRPCType]()))
         case "string","int","i4","i8","boolean","double","dateTime.iso8601","base64":
             hasValue = false
         default:
@@ -109,44 +109,44 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
         }
     }
     
-    func parser(parser: NSXMLParser, foundCharacters string: String) {
+    func parser(_ parser: XMLParser, foundCharacters string: String) {
         switch type {
         case "string":
             if hasValue {
                 switch scalar {
-                case .XMLRPCString(var s):
+                case .xmlrpcString(var s):
                     s += string
-                    scalar = .XMLRPCString(s)
+                    scalar = .xmlrpcString(s)
                 default:
                     break
                 }
             } else {
-                scalar = .XMLRPCString(string)
+                scalar = .xmlrpcString(string)
             }
         case "int","i4","i8":
-            scalar = .XMLRPCInt(Int(string)!)
+            scalar = .xmlrpcInt(Int(string)!)
         case "boolean":
-            scalar = .XMLRPCBool(string=="1")
+            scalar = .xmlrpcBool(string=="1")
         case "double":
-            scalar = .XMLRPCDouble(Double(string)!)
+            scalar = .xmlrpcDouble(Double(string)!)
         case "dateTime.iso8601":
-            scalar = XMLRPCType.XMLRPCDate(NSDate()) // WARNING: Incomplete!!!
+            scalar = XMLRPCType.xmlrpcDate(Date()) // WARNING: Incomplete!!!
         case "base64":
-            scalar = .XMLRPCData(NSData(base64EncodedString: string, options: NSDataBase64DecodingOptions(rawValue: 0))!)
+            scalar = .xmlrpcData(Data(base64Encoded: string, options: NSData.Base64DecodingOptions(rawValue: 0))!)
         case "name":
             tmp.append(string)
         default:
-            scalar = .XMLRPCNil
+            scalar = .xmlrpcNil
             break
         }
         hasValue = true
     }
     
-    func parser(parser: NSXMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
+    func parser(_ parser: XMLParser, didEndElement elementName: String, namespaceURI: String?, qualifiedName qName: String?) {
         switch elementName {
         case "string","int","i4","i8","boolean","double","dateTime.iso8601","base64":
             if !hasValue {
-                scalar = .XMLRPCNil
+                scalar = .xmlrpcNil
             }
             if tmp.count == 0 { // empty array => scalar only param
                 tmp.append(scalar)
@@ -157,10 +157,10 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
             else { // else it is in an array
                 let last = tmp.removeLast() as! XMLRPCType
                 switch last {
-                case .XMLRPCArray(let xmlRpcArray):
+                case .xmlrpcArray(let xmlRpcArray):
                     var newArray = xmlRpcArray
                     newArray.append(scalar)
-                    tmp.append(XMLRPCType.XMLRPCArray(newArray))
+                    tmp.append(XMLRPCType.xmlrpcArray(newArray))
                 default:
                     break
                 }
@@ -173,10 +173,10 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
             let key = tmp.removeLast() as! String
             let last = tmp.removeLast() as! XMLRPCType
             switch last {
-            case .XMLRPCStruct(let xmlRpcStruct):
+            case .xmlrpcStruct(let xmlRpcStruct):
                 var newStruct = xmlRpcStruct
                 newStruct.updateValue(value, forKey: key)
-                tmp.append(XMLRPCType.XMLRPCStruct(newStruct))
+                tmp.append(XMLRPCType.xmlrpcStruct(newStruct))
             default:
                 break
             }
@@ -191,10 +191,10 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
                 let last = tmp.removeLast() as! XMLRPCType
                 let old = tmp.removeLast() as! XMLRPCType
                 switch old {
-                case .XMLRPCArray(let xmlRpcArray):
+                case .xmlrpcArray(let xmlRpcArray):
                     var newArray = xmlRpcArray
                     newArray.append(last)
-                    tmp.append(XMLRPCType.XMLRPCArray(newArray))
+                    tmp.append(XMLRPCType.xmlrpcArray(newArray))
                 default:
                     break
                 }
@@ -204,7 +204,7 @@ class XMLRPCParser : NSXMLParser, NSXMLParserDelegate
         }
     }
     
-    func parser(parser: NSXMLParser, parseErrorOccurred parseError: NSError) {
+    func parser(_ parser: XMLParser, parseErrorOccurred parseError: Error) {
         isFault = true
         print("Error \(parseError.code), Description: \(parser.parserError?.localizedDescription), Line: \(parser.lineNumber), Column: \(parser.columnNumber)")
     }

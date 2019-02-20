@@ -27,18 +27,18 @@ class TabBarManagerController: UITabBarController {
     
     func save() {
         let data = NSMutableData()
-        let archiver = NSKeyedArchiver(forWritingWithMutableData: data)
-        archiver.encodeObject(manager, forKey: "manager")
+        let archiver = NSKeyedArchiver(forWritingWith: data)
+        archiver.encode(manager, forKey: "manager")
         archiver.finishEncoding()
-        data.writeToFile(prefPath(), atomically: true)
+        data.write(toFile: prefPath(), atomically: true)
     }
     
     func loadManager() {
         let path = prefPath()
-        if NSFileManager.defaultManager().fileExistsAtPath(path) {
-            if let data = NSData(contentsOfFile: path) {
-                let unarchiver = NSKeyedUnarchiver(forReadingWithData: data)
-                manager = unarchiver.decodeObjectForKey("manager") as! Manager
+        if FileManager.default.fileExists(atPath: path) {
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
+                let unarchiver = NSKeyedUnarchiver(forReadingWith: data)
+                manager = unarchiver.decodeObject(forKey: "manager") as! Manager
                 unarchiver.finishDecoding()
             }
         } else {

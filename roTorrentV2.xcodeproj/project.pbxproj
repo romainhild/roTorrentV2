@@ -198,6 +198,7 @@
 					7A028A121CEF26D000C51F99 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = U34ZVBHBJ7;
+						LastSwiftMigration = 0810;
 						SystemCapabilities = {
 							com.apple.WAC = {
 								enabled = 0;
@@ -386,6 +387,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.romainhild.roTorrentV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
 		};
@@ -400,6 +402,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.romainhild.roTorrentV2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				SWIFT_VERSION = 3.0;
 			};
 			name = Release;
 		};

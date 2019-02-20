@@ -37,34 +37,34 @@ class DetailTorrentController: UITableViewController {
         
         nameLabel.text = torrent.name
         ratioLabel.text = String(torrent.ratio)
-        sizeLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.size, countStyle: NSByteCountFormatterCountStyle.File)
-        downloadLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.sizeCompleted, countStyle: NSByteCountFormatterCountStyle.File)
-        uploadLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.sizeUP, countStyle: NSByteCountFormatterCountStyle.File)
-        leftLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.sizeLeft, countStyle: NSByteCountFormatterCountStyle.File)
+        sizeLabel.text = ByteCountFormatter.string(fromByteCount: torrent.size, countStyle: ByteCountFormatter.CountStyle.file)
+        downloadLabel.text = ByteCountFormatter.string(fromByteCount: torrent.sizeCompleted, countStyle: ByteCountFormatter.CountStyle.file)
+        uploadLabel.text = ByteCountFormatter.string(fromByteCount: torrent.sizeUP, countStyle: ByteCountFormatter.CountStyle.file)
+        leftLabel.text = ByteCountFormatter.string(fromByteCount: torrent.sizeLeft, countStyle: ByteCountFormatter.CountStyle.file)
         dateLabel.text = ShortFormatterSingleton.sharedInstance.stringFromDate(torrent.date)
         hashLabel.text = torrent.hashT
         
         updateSeedersLeechersLabels()
         updateStateLabels()
         
-        dlLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.speedDL, countStyle: NSByteCountFormatterCountStyle.File)
-        upLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.speedUP, countStyle: NSByteCountFormatterCountStyle.File)
+        dlLabel.text = ByteCountFormatter.string(fromByteCount: torrent.speedDL, countStyle: ByteCountFormatter.CountStyle.file)
+        upLabel.text = ByteCountFormatter.string(fromByteCount: torrent.speedUP, countStyle: ByteCountFormatter.CountStyle.file)
         
         directoryLabel.text = torrent.directory
         pathLabel.text = torrent.path
         filesLabel.text = String(torrent.numberOfFiles)
-        let fileCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 2, inSection: 3))
-        let myBgView = UIView(frame: CGRectZero)
-        myBgView.backgroundColor = UIColor.blackColor()
+        let fileCell = super.tableView(tableView, cellForRowAt: IndexPath(row: 2, section: 3))
+        let myBgView = UIView(frame: CGRect.zero)
+        myBgView.backgroundColor = UIColor.black
         fileCell.backgroundView = myBgView
-        fileCell.accessoryType = .DisclosureIndicator
+        fileCell.accessoryType = .disclosureIndicator
         
         trackersLabel.text = String(torrent.numberOfTrackers)
-        let trackerCell = super.tableView(tableView, cellForRowAtIndexPath: NSIndexPath(forRow: 0, inSection: 4))
-        let myBgView2 = UIView(frame: CGRectZero)
-        myBgView2.backgroundColor = UIColor.blackColor()
+        let trackerCell = super.tableView(tableView, cellForRowAt: IndexPath(row: 0, section: 4))
+        let myBgView2 = UIView(frame: CGRect.zero)
+        myBgView2.backgroundColor = UIColor.black
         trackerCell.backgroundView = myBgView2
-        trackerCell.accessoryType = .DisclosureIndicator
+        trackerCell.accessoryType = .disclosureIndicator
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,61 +72,61 @@ class DetailTorrentController: UITableViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func edit(sender: AnyObject) {
-        let actionSheet = UIAlertController(title: "Edit Torrent", message: torrent.name, preferredStyle: .ActionSheet)
-        let setDir = UIAlertAction(title: "Set Directory", style: .Default) { action in
-            self.performSegueWithIdentifier("ChooseDir", sender: self.torrent)
+    @IBAction func edit(_ sender: AnyObject) {
+        let actionSheet = UIAlertController(title: "Edit Torrent", message: torrent.name, preferredStyle: .actionSheet)
+        let setDir = UIAlertAction(title: "Set Directory", style: .default) { action in
+            self.performSegue(withIdentifier: "ChooseDir", sender: self.torrent)
         }
         actionSheet.addAction(setDir)
-        let pause = UIAlertAction(title: "Pause", style: .Default) { action in
-            let call = RTorrentCall.Stop(self.torrent.hashT)
+        let pause = UIAlertAction(title: "Pause", style: .default) { action in
+            let call = RTorrentCall.stop(self.torrent.hashT)
             self.manager.call(call) { response in
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshState()
                 }
             }
         }
         actionSheet.addAction(pause)
-        let start = UIAlertAction(title: "Start", style: .Default) { action in
-            let call = RTorrentCall.Start(self.torrent.hashT)
+        let start = UIAlertAction(title: "Start", style: .default) { action in
+            let call = RTorrentCall.start(self.torrent.hashT)
             self.manager.call(call) { response in
-                dispatch_async(dispatch_get_main_queue()) {
+                DispatchQueue.main.async {
                     self.refreshState()
                 }
             }
         }
         actionSheet.addAction(start)
-        let erase = UIAlertAction(title: "Erase", style: .Destructive) { action in
-            let alert = UIAlertController(title: "Really erase this torrent?", message: self.torrent.name, preferredStyle: .Alert)
-            let yes = UIAlertAction(title: "Yes", style: .Default) { action in
-                let call = RTorrentCall.Erase(self.torrent.hashT)
+        let erase = UIAlertAction(title: "Erase", style: .destructive) { action in
+            let alert = UIAlertController(title: "Really erase this torrent?", message: self.torrent.name, preferredStyle: .alert)
+            let yes = UIAlertAction(title: "Yes", style: .default) { action in
+                let call = RTorrentCall.erase(self.torrent.hashT)
                 self.manager.call(call) { response in }
             }
             alert.addAction(yes)
-            let no = UIAlertAction(title: "No", style: .Cancel, handler: nil)
+            let no = UIAlertAction(title: "No", style: .cancel, handler: nil)
             alert.addAction(no)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(alert, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
             }
         }
         actionSheet.addAction(erase)
-        let eraseAndDelete = UIAlertAction(title: "Erase and Delete", style: .Destructive) { action in
-            let alert = UIAlertController(title: "Really erase this torrent and all its files?", message: self.torrent.name, preferredStyle: .Alert)
-            let yes = UIAlertAction(title: "Yes", style: .Default) { action in
+        let eraseAndDelete = UIAlertAction(title: "Erase and Delete", style: .destructive) { action in
+            let alert = UIAlertController(title: "Really erase this torrent and all its files?", message: self.torrent.name, preferredStyle: .alert)
+            let yes = UIAlertAction(title: "Yes", style: .default) { action in
                 let call = self.manager.callToEraseAndDelete(self.torrent)
                 self.manager.call(call) { response in }
             }
             alert.addAction(yes)
-            let no = UIAlertAction(title: "No", style: .Cancel, handler: nil)
+            let no = UIAlertAction(title: "No", style: .cancel, handler: nil)
             alert.addAction(no)
-            dispatch_async(dispatch_get_main_queue()) {
-                self.presentViewController(alert, animated: true, completion: nil)
+            DispatchQueue.main.async {
+                self.present(alert, animated: true, completion: nil)
             }
         }
         actionSheet.addAction(eraseAndDelete)
-        let cancel = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
         actionSheet.addAction(cancel)
-        presentViewController(actionSheet, animated: true, completion: nil)
+        present(actionSheet, animated: true, completion: nil)
     }
     
     func refreshState() {
@@ -134,17 +134,17 @@ class DetailTorrentController: UITableViewController {
             let call = manager.callToRefreshState(torrent)
             manager.call(call) { response in
                 switch response {
-                case .Success(let xmltype):
+                case .success(let xmltype):
                     torrent.refreshState(xmltype)
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.updateStateLabels()
                     }
-                case .Failure(let error):
-                    let alert = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .Alert)
-                    let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                case .failure(let error):
+                    let alert = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
                     alert.addAction(ok)
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.presentViewController(alert, animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -156,18 +156,18 @@ class DetailTorrentController: UITableViewController {
             let call = manager.callTorRefreshDirAndPath(torrent)
             manager.call(call) { response in
                 switch response {
-                case .Success(let xmltype):
+                case .success(let xmltype):
                     torrent.refreshDirAndPath(xmltype)
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.directoryLabel.text = torrent.directory
                         self.pathLabel.text = torrent.path
                     }
-                case .Failure(let error):
-                    let alert = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .Alert)
-                    let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                case .failure(let error):
+                    let alert = UIAlertController(title: "Oops!", message: error.localizedDescription, preferredStyle: .alert)
+                    let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
                     alert.addAction(ok)
-                    dispatch_async(dispatch_get_main_queue()) {
-                        self.presentViewController(alert, animated: true, completion: nil)
+                    DispatchQueue.main.async {
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -201,11 +201,11 @@ class DetailTorrentController: UITableViewController {
 
     // MARK: - Table view data source
     
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         if indexPath.section == 3 && indexPath.row == 2 {
-            performSegueWithIdentifier("DirTracker", sender: true)
+            performSegue(withIdentifier: "DirTracker", sender: true)
         } else if indexPath.section == 4 && indexPath.row == 0 {
-            performSegueWithIdentifier("DirTracker", sender: false)
+            performSegue(withIdentifier: "DirTracker", sender: false)
         }
         return nil
     }
@@ -247,15 +247,15 @@ class DetailTorrentController: UITableViewController {
 
     // MARK: - Navigation
 
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "DirTracker" {
-            let controller = segue.destinationViewController as! DirTrackerController
+            let controller = segue.destination as! DirTrackerController
             controller.manager = self.manager
             controller.torrent = self.torrent
             controller.isDir = sender as! Bool
             controller.delegate = self
         } else if segue.identifier == "ChooseDir" {
-            let nav = segue.destinationViewController as! UINavigationController
+            let nav = segue.destination as! UINavigationController
             let controller = nav.topViewController as! ThroughFolderController
             controller.delegate = self
             controller.torrent = sender as? Torrent
@@ -271,11 +271,11 @@ extension DetailTorrentController: DirTrackerControllerDelegate {
 }
 
 extension DetailTorrentController: ThroughFolderDelegate {
-    func controllerDidCancel(controller: ThroughFolderController) {
+    func controllerDidCancel(_ controller: ThroughFolderController) {
         
     }
     
-    func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forTorrent torrent: Torrent) {
+    func controller(_ controller: ThroughFolderController, didChooseDirectory directory: String, forTorrent torrent: Torrent) {
         let call = manager.callToMoveTorrent(torrent, inNewDirectory: directory)
         manager.call(call) { response in
             self.refreshDirAndPath()

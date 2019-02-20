@@ -19,7 +19,7 @@ class DirTrackerController: UITableViewController {
         super.viewDidLoad()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         if isDir {
             self.navigationItem.title = "Files"
         } else {
@@ -29,17 +29,17 @@ class DirTrackerController: UITableViewController {
             let call = manager.callToInitFilesForTorrent(torrent)
             manager.call(call) { response in
                 switch response {
-                case .Success(let xmltype):
+                case .success(let xmltype):
                     self.torrent.initFiles(xmltype)
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.tableView.reloadData()
                     }
-                case .Failure(let error):
-                    dispatch_async(dispatch_get_main_queue()) {
-                        let alert = UIAlertController(title: "Failed to init files", message: error.localizedDescription, preferredStyle: .Alert)
-                        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Failed to init files", message: error.localizedDescription, preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
                         alert.addAction(ok)
-                        self.presentViewController(alert, animated: true, completion: nil)
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -47,18 +47,18 @@ class DirTrackerController: UITableViewController {
             let call = manager.callToInitTrackersForTorrent(torrent)
             manager.call(call) { response in
                 switch response {
-                case .Success(let xmltype):
+                case .success(let xmltype):
                     self.torrent.initTrackers(xmltype)
-                    dispatch_async(dispatch_get_main_queue()) {
+                    DispatchQueue.main.async {
                         self.delegate?.trackersHaveBeenInitialized()
                         self.tableView.reloadData()
                     }
-                case .Failure(let error):
-                    dispatch_async(dispatch_get_main_queue()) {
-                        let alert = UIAlertController(title: "Failed to init trackers", message: error.localizedDescription, preferredStyle: .Alert)
-                        let ok = UIAlertAction(title: "Ok", style: .Default, handler: nil)
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        let alert = UIAlertController(title: "Failed to init trackers", message: error.localizedDescription, preferredStyle: .alert)
+                        let ok = UIAlertAction(title: "Ok", style: .default, handler: nil)
                         alert.addAction(ok)
-                        self.presentViewController(alert, animated: true, completion: nil)
+                        self.present(alert, animated: true, completion: nil)
                     }
                 }
             }
@@ -71,11 +71,11 @@ class DirTrackerController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if isDir {
             return torrent.listOfFiles.count
         } else {
@@ -83,14 +83,14 @@ class DirTrackerController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DirTrackerCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DirTrackerCell", for: indexPath)
 
         let mainLabel = cell.viewWithTag(1) as! UILabel
         let detailLabel = cell.viewWithTag(2) as! UILabel
         if isDir {
             mainLabel.text = torrent.listOfFiles[indexPath.row]
-            detailLabel.text = NSByteCountFormatter.stringFromByteCount(torrent.listOfFilesSize[indexPath.row], countStyle: NSByteCountFormatterCountStyle.File)
+            detailLabel.text = ByteCountFormatter.string(fromByteCount: torrent.listOfFilesSize[indexPath.row], countStyle: ByteCountFormatter.CountStyle.file)
         } else {
             mainLabel.text = torrent.listOfTrackers[indexPath.row]
             detailLabel.text = "S/L: \(torrent.listOfTrackersSeeders[indexPath.row])/\(torrent.listOfTrackersLeechers[indexPath.row])"

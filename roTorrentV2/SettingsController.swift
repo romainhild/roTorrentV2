@@ -48,7 +48,7 @@ class SettingsController: UITableViewController {
 }
 
 extension SettingsController: UITextFieldDelegate {
-    func textFieldShouldReturn(textField: UITextField) -> Bool {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         switch textField {
         case hostField:
             userField.becomeFirstResponder()
@@ -64,7 +64,7 @@ extension SettingsController: UITextFieldDelegate {
         return false
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
+    func textFieldDidEndEditing(_ textField: UITextField) {
         switch textField {
         case hostField:
             manager.urlComponents.host = hostField.text
@@ -73,7 +73,7 @@ extension SettingsController: UITextFieldDelegate {
         case passwordField:
             manager.urlComponents.password = passwordField.text
         case mountField:
-            if let text = mountField.text where text.hasPrefix("/") {
+            if let text = mountField.text, text.hasPrefix("/") {
                 manager.urlComponents.path = mountField.text
             } else {
                 manager.urlComponents.path = nil

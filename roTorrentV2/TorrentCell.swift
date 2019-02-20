@@ -21,7 +21,7 @@ class TorrentCell: UITableViewCell {
         super.awakeFromNib()
     }
     
-    override func setSelected(selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }
     
@@ -29,12 +29,12 @@ class TorrentCell: UITableViewCell {
         super.prepareForReuse()
     }
     
-    func configureForTorrent(torrent: Torrent) {
+    func configureForTorrent(_ torrent: Torrent) {
         nameLabel.text = torrent.name
-        sizeLabel.text = "Size: " + NSByteCountFormatter.stringFromByteCount(torrent.size, countStyle: NSByteCountFormatterCountStyle.File)
+        sizeLabel.text = "Size: " + ByteCountFormatter.string(fromByteCount: torrent.size, countStyle: ByteCountFormatter.CountStyle.file)
         ratioLabel.text = "Ratio: " + String(torrent.ratio)
-        upLabel.text = "Up: " + NSByteCountFormatter.stringFromByteCount(torrent.speedUP, countStyle: NSByteCountFormatterCountStyle.File)
-        downLabel.text = "Dl : " + NSByteCountFormatter.stringFromByteCount(torrent.speedDL, countStyle: NSByteCountFormatterCountStyle.File)
+        upLabel.text = "Up: " + ByteCountFormatter.string(fromByteCount: torrent.speedUP, countStyle: ByteCountFormatter.CountStyle.file)
+        downLabel.text = "Dl : " + ByteCountFormatter.string(fromByteCount: torrent.speedDL, countStyle: ByteCountFormatter.CountStyle.file)
         stateProgressView.progress = Float(torrent.sizeCompleted)/Float(torrent.size)
         if let _ = torrent.message {
             stateProgressView.progressTintColor = UIColor(red: 1, green: 0, blue: 0, alpha: 1)

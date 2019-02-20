@@ -24,11 +24,11 @@ class DownloadFilterController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 3
     }
     
-    override func tableView(tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         switch section {
         case 0:
             return "Sorting In"
@@ -41,7 +41,7 @@ class DownloadFilterController: UITableViewController {
         }
     }
     
-    override func tableView(tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if section == 0 {
             return 44+20
         } else {
@@ -49,7 +49,7 @@ class DownloadFilterController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
             return SortingOrder.count
@@ -62,7 +62,7 @@ class DownloadFilterController: UITableViewController {
         }
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let string: String, rowSelected: Int
         switch indexPath.section {
         case 0:
@@ -79,22 +79,22 @@ class DownloadFilterController: UITableViewController {
             rowSelected = 0
         }
         
-        let range = (string as NSString).rangeOfString(string)
+        let range = (string as NSString).range(of: string)
         let attributedString = NSMutableAttributedString(string: string)
         
         if indexPath.row == rowSelected {
-            attributedString.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFontOfSize(20), range: range)
-            attributedString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.StyleSingle.rawValue, range: range)
+            attributedString.addAttribute(NSFontAttributeName, value: UIFont.boldSystemFont(ofSize: 20), range: range)
+            attributedString.addAttribute(NSUnderlineStyleAttributeName, value: NSUnderlineStyle.styleSingle.rawValue, range: range)
         } else {
-            attributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFontOfSize(16), range: range)
+            attributedString.addAttribute(NSFontAttributeName, value: UIFont.systemFont(ofSize: 16), range: range)
         }
 
-        let cell = tableView.dequeueReusableCellWithIdentifier("FilterCell", forIndexPath: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FilterCell", for: indexPath)
         cell.textLabel?.attributedText = attributedString
         return cell
     }
     
-    override func tableView(tableView: UITableView, willSelectRowAtIndexPath indexPath: NSIndexPath) -> NSIndexPath? {
+    override func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
         switch indexPath.section {
         case 0:
             manager.sortDlIn = SortingOrder(rawValue: indexPath.row)!

@@ -21,20 +21,20 @@ class ThroughFolderController: UITableViewController {
     var currentDir: String? {
         didSet {
             if let currentDir = currentDir {
-                let call = RTorrentCall.ListDirectories(currentDir)
+                let call = RTorrentCall.listDirectories(currentDir)
                 manager.call(call) { response in
                     switch response {
-                    case .Success(let xmltype):
+                    case .success(let xmltype):
                         switch xmltype {
-                        case .XMLRPCString(let listAsString):
-                            self.folders = NSString(string: listAsString).componentsSeparatedByCharactersInSet(NSCharacterSet.newlineCharacterSet())
+                        case .xmlrpcString(let listAsString):
+                            self.folders = NSString(string: listAsString).components(separatedBy: CharacterSet.newlines)
                             for i in 0..<self.folders.count {
                                 if self.folders[i].isEmpty {
-                                    self.folders.removeAtIndex(i)
+                                    self.folders.remove(at: i)
                                 }
                             }
-                            self.folders.sortInPlace { $0 < $1 }
-                            dispatch_async(dispatch_get_main_queue()) {
+                            self.folders.sort { $0 < $1 }
+                            DispatchQueue.main.async {
                                 self.tableView.reloadData()
                             }
                         default:
@@ -52,12 +52,12 @@ class ThroughFolderController: UITableViewController {
         super.viewDidLoad()
 
         if currentDir == nil {
-            let call = RTorrentCall.BaseDirectory
+            let call = RTorrentCall.baseDirectory
             manager.call(call) { response in
                 switch response {
-                case .Success(let xmltype):
+                case .success(let xmltype):
                     switch xmltype {
-                    case .XMLRPCString(let dir):
+                    case .xmlrpcString(let dir):
                         self.currentDir = dir
                     default:
                         break
@@ -69,10 +69,10 @@ class ThroughFolderController: UITableViewController {
         }
     }
     
-    @IBAction func done(sender: AnyObject) {
+    @IBAction func done(_ sender: AnyObject) {
         if let currentDir = self.currentDir {
-            let actionSheet = UIAlertController(title: "Do you want to choose this directory ?", message: currentDir, preferredStyle: .ActionSheet)
-            let ok = UIAlertAction(title: "Yes", style: .Default) { action in
+            let actionSheet = UIAlertController(title: "Do you want to choose this directory ?", message: currentDir, preferredStyle: .actionSheet)
+            let ok = UIAlertAction(title: "Yes", style: .default) { action in
                 if let item = self.item {
                     self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forItem: item)
                 } else if let url = self.url {
@@ -80,18 +80,18 @@ class ThroughFolderController: UITableViewController {
                 } else if let torrent = self.torrent {
                     self.delegate?.controller?(self, didChooseDirectory: self.currentDir!, forTorrent: torrent)
                 }
-                self.dismissViewControllerAnimated(true, completion: nil)
+                self.dismiss(animated: true, completion: nil)
             }
             actionSheet.addAction(ok)
-            let no = UIAlertAction(title: "No", style: .Default, handler: nil)
+            let no = UIAlertAction(title: "No", style: .default, handler: nil)
             actionSheet.addAction(no)
-            let cancel = UIAlertAction(title: "Cancel", style: .Cancel) { action in
-                self.dismissViewControllerAnimated(true, completion: nil)
+            let cancel = UIAlertAction(title: "Cancel", style: .cancel) { action in
+                self.dismiss(animated: true, completion: nil)
             }
             actionSheet.addAction(cancel)
-            presentViewController(actionSheet, animated: true, completion: nil)
+            present(actionSheet, animated: true, completion: nil)
         } else {
-            self.dismissViewControllerAnimated(true, completion: nil)
+            self.dismiss(animated: true, completion: nil)
         }
     }
 
@@ -102,19 +102,19 @@ class ThroughFolderController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return folders.count
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("DirCell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "DirCell", for: indexPath)
 
         let dir = folders[indexPath.row]
-        if let dirAsURL = NSURL(string: dir), path = dirAsURL.lastPathComponent {
+        if let dirAsURL = URL(string: dir), let path = dirAsURL.lastPathComponent {
             cell.textLabel?.text = path
         } else {
             cell.textLabel?.text = dir
@@ -123,12 +123,12 @@ class ThroughFolderController: UITableViewController {
         return cell
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "NextDir" {
             let cell = sender as! UITableViewCell
-            let index = tableView.indexPathForCell(cell)
+            let index = tableView.indexPath(for: cell)
             let dir = folders[index!.row]
-            let controller = segue.destinationViewController as! ThroughFolderController
+            let controller = segue.destination as! ThroughFolderController
             controller.manager = self.manager
             if let item = self.item {
                 controller.item = item
@@ -147,8 +147,8 @@ class ThroughFolderController: UITableViewController {
 }
 
 @objc protocol ThroughFolderDelegate {
-    func controllerDidCancel(controller: ThroughFolderController)
-    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forItem item: RSSItem)
-    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String)
-    optional func controller(controller: ThroughFolderController, didChooseDirectory directory: String, forTorrent torrent: Torrent)
+    func controllerDidCancel(_ controller: ThroughFolderController)
+    @objc optional func controller(_ controller: ThroughFolderController, didChooseDirectory directory: String, forItem item: RSSItem)
+    @objc optional func controller(_ controller: ThroughFolderController, didChooseDirectory directory: String, forURL url: String)
+    @objc optional func controller(_ controller: ThroughFolderController, didChooseDirectory directory: String, forTorrent torrent: Torrent)
 }
